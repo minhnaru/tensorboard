@@ -27,6 +27,10 @@
           "type":"prov:QUALIFIED_NAME",
           "$":"prov:Revision"
         }
+      },
+      "_:id24":{
+        "prov:usedEntity":"exg:dataSet2",
+        "prov:generatedEntity":"exn:articleV2"
       }
     },
     "wasAssociatedWith":{
