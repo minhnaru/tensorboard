@@ -397,7 +397,6 @@ export class OpNodeImpl implements OpNode {
    * @param rawNode The raw node.
    */
   constructor(rawNode: tf.graph.proto.NodeDef) {
-    // console.log(rawNode, 'rawNode');
     this.op = rawNode.op;
     this.name = rawNode.name;
     this.device = rawNode.device;
@@ -989,6 +988,152 @@ function addEdgeToGraph(
   });
 }
 
+// minh
+// import * as data from 'https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json';
+
+function rawNodeGenerator() {
+  let rawNodesgene = [];
+
+  function createRaw(Data) {
+
+    // pick only Entity, Activity, and Agent
+    let pickEntity = _.pick(Data, ["entity"]);
+    let pickActivity = _.pick(Data, ["activity"]);
+    let pickAgent = _.pick(Data, ["agent"]);
+
+    let procEntity = _.keys(pickEntity["entity"]);
+    let procActivity = _.keys(pickActivity["activity"]);
+    let procAgent = _.keys(pickAgent["agent"]);
+
+    //
+    
+
+
+    //
+    let objData = {} as OpNode;
+    for (let i = 0; i < procEntity.length; i++) {
+      let splitData = procEntity[i].split(":");
+      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      objData.op = "entity";
+      rawNodesgene.push(objData);
+      objData = {} as OpNode;
+    }
+    for (let i = 0; i < procActivity.length; i++) {
+      let splitData = procActivity[i].split(":");
+      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      objData.op = "activity";
+      rawNodesgene.push(objData);
+      objData = {} as OpNode;
+    }
+    for (let i = 0; i < procAgent.length; i++) {
+      let splitData = procAgent[i].split(":");
+      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      objData.op = "agent";
+      rawNodesgene.push(objData);
+      objData = {} as OpNode;
+    }
+    return rawNodesgene;
+  }
+  
+  function processData(errors, Data) {
+    if (errors) throw errors;
+    console.log(Data,' Data');
+    createRaw(Data);
+  }
+  
+  d3.queue()
+      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
+      .await(processData);
+
+  /* let rawNodesgene = [
+    // {
+    //   "name":"init",
+    //   "op":"NoOp",
+    //   // "input": [
+    //   //   "Recipes/bake",
+    //   //   "Products/cake"
+    //   // ],
+    //   // "attr": []
+    // },
+    {
+      "name":"Recipes/bake",
+      "op":"activity",
+      // "input":[
+      //   "Products/cake"
+      // ],
+      // "attr":[  
+      //   {  
+      //     "key":"Products/cake--Recipes/bake", // start--end
+      //     "value":"wasGenereatedBy"
+      //   }
+      // ]
+    },
+    {
+      "name":"Products/cake",
+      "op":"entity",
+      // "attr":[]
+    },
+    {
+      "name":"Recipes/ingredients",
+      "op":"entity",
+      // "input":[
+      //   "Recipes/bake",
+      //   "Products/cake"
+      // ],
+      // "attr":[  
+      //   {
+      //     "key":"Recipes/bake--Recipes/ingredients",
+      //     "value":"used"
+      //   },
+      //   {
+      //     "key":"Products/cake--Recipes/ingredients",
+      //     "value":"wasDerivedFrom"
+      //   }
+      // ]
+    },
+    {
+      "name":"Recipes/spices",
+      "op":"entity",
+      // "input":[
+      //   "Recipes/bake",
+      //   "Products/cake"
+      // ],
+      // "attr":[  
+      //   {
+      //     "key":"Recipes/bake--Recipes/spices",
+      //     "value":"used"
+      //   },
+      //   {
+      //     "key":"Products/cake--Recipes/spices",
+      //     "value":"wasRevisionOf"
+      //   }
+      // ]
+    },
+    {
+      "name":"Staff/chef",
+      "op":"agent",
+      // "input":[
+      //   "Recipes/bake",
+      //   "Products/cake"
+      // ],
+      // "attr":[
+      //   {
+      //     "key":"Recipes/bake--Staff/chef",
+      //     "value":"wasAssociatedWith"
+      //   },
+      //   {
+      //     "key":"Products/cake--Staff/chef",
+      //     "value":"wasAttributedTo"
+      //   }
+      // ]
+    }
+  ]; */
+
+  console.log(rawNodesgene,' rawNodes');
+
+  return rawNodesgene;
+}
+
 export function build(
     graphDef: tf.graph.proto.GraphDef, params: BuildParams,
     tracker: ProgressTracker): Promise<SlimGraph|void> {
@@ -1012,34 +1157,19 @@ export function build(
   let embeddingNodeNames: string[] = [];
   // let rawNodes = graphDef.node;
 
+  let rawNodes = rawNodeGenerator();
+
   // Main with Nest
-  let rawNodes = [
+  /* let rawNodes = [
     {
       "name":"init",
       "op":"NoOp",
       "input": [
         "Recipes/bake",
-        "Products/cake" minh
+        "Products/cake"
       ],
       "attr": []
     },
-    // {
-    //   "name":"Restaurant/Promotion/Products/gift",
-    //   "op":"entity",
-    //   "input":[
-    //     "Products/cake",
-    //     "Restaurant/Promotion/Products/warp"
-    //   ],
-    //   "attr":[]
-    // },
-    // {
-    //   "name":"Restaurant/Promotion/Products/warp",
-    //   "op":"entity",
-    //   "input":[
-        
-    //   ],
-    //   "attr":[]
-    // },
     {
       "name":"Recipes/bake",
       "op":"activity",
@@ -1120,7 +1250,7 @@ export function build(
       ],
       "attr":[]
     }
-  ];
+  ]; */
 
   // Main w/o Nest
   /* let rawNodes = [
@@ -3818,9 +3948,7 @@ export function build(
               nodeNames[index] = opNode.name;
               index++;
               return opNode;
-            };
-
-            console.log(rawNodes, 'rawNodes');                        
+            };                     
             
             _.each(rawNodes, processRawNode);
 
@@ -3928,7 +4056,6 @@ export function build(
           },
           tracker)
       .then((opNodes) => {
-        // console.log(opNodes, 'opNodes');
         // Create the graph data structure from the graphlib library.
         return tf.graph.util.runAsyncTask(
             'Building the data structure', 70, () => {
@@ -3998,7 +4125,6 @@ export function build(
               _.each(inEmbedding, (node, name) => {
                 node.name = normalizedNameDict[node.name] || node.name;
               });
-              console.log(graph);
               return graph;
 
             }, tracker);
