@@ -11,6 +11,7 @@
     },
     "wasAssociatedWith": {
         "_:id3": {
+            "prov:plan":"staff:instructions",
             "prov:agent": "staff:chef",
             "prov:activity": "recipes:bake"
         }
@@ -44,7 +45,8 @@
     "entity": {
         "products:cake": {},
         "recipes:spices": {},
-        "recipes:ingredients": {}
+        "recipes:ingredients": {},
+        "staff:instructions": {}
     },
     "prefix": {
         "foaf": "http://xmlns.com/foaf/0.1/",
