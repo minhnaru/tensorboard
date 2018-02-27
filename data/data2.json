@@ -2,7 +2,8 @@
     "wasDerivedFrom": {
         "_:id1": {
             "prov:usedEntity": "recipes:spices",
-            "prov:generatedEntity": "products:cake"
+            "prov:generatedEntity": "products:cake",
+            "prov:activity": "recipes:combine"
         },
         "_:id2": {
             "prov:usedEntity": "recipes:ingredients",
@@ -55,7 +56,8 @@
         "staff": "http://staff/"
     },
     "activity": {
-        "recipes:bake": {}
+        "recipes:bake": {},
+        "recipes:combine": {}
     },
     "wasGeneratedBy": {
         "_:id7": {
