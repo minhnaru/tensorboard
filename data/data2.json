@@ -7,7 +7,8 @@
         },
         "_:id2": {
             "prov:usedEntity": "recipes:ingredients",
-            "prov:generatedEntity": "products:cake"
+            "prov:generatedEntity": "products:cake",
+            "prov:activity": "recipes:prepare"
         }
     },
     "wasAssociatedWith": {
@@ -57,7 +58,8 @@
     },
     "activity": {
         "recipes:bake": {},
-        "recipes:combine": {}
+        "recipes:combine": {},
+        "recipes:prepare": {}
     },
     "wasGeneratedBy": {
         "_:id7": {
