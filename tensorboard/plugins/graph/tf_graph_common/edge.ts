@@ -143,11 +143,11 @@ export function getLabelForBaseEdge(
   |  +-------+        +-----+
   */
 
-  console.log('-------------------------AAAAA--------------------------');
-  console.log(baseEdge.v, ' baseedge V start');
-  console.log(baseEdge.w, ' baseedge W end');
-  console.log(startNode, ' startNode');
-  console.log(endNode, ' endNode');
+  // console.log('-------------------------AAAAA--------------------------');
+  // console.log(baseEdge.v, ' baseedge V start');
+  // console.log(baseEdge.w, ' baseedge W end');
+  // console.log(startNode, ' startNode');
+  // console.log(endNode, ' endNode');
 
   // Combine to match with the key in Node
   let comb = baseEdge.v + EDGE_KEY_SEP + baseEdge.w;
@@ -159,12 +159,15 @@ export function getLabelForBaseEdge(
   //   console.log(vaf, ' find');
   // }
 
-  if (endNode.attr.length === 0 && startNode.inputs.length === 0) {
-    return 'no label';
+  // if (endNode.attr.length === 0 && startNode.inputs.length === 0) {
+  //   return 'no label';
+  // }
+  if (endNode.attr.length === 0) {
+    // return 'no label';
+    return ' ';
   }
   for (let i = 0; i < endNode.attr.length; i++) {
     if (comb == endNode.attr[i].key) {
-      console.log(endNode.attr[i].value, ' Label Value');
       return endNode.attr[i].value;
     }
   }

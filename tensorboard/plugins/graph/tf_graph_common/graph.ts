@@ -16,6 +16,8 @@ module tf.graph {
 
 /** Delimiter used in node names to denote namespaces. */
 export const NAMESPACE_DELIM = '/';
+export const NAMESPACE_EX = 'ex_';
+export const NAMESPACE_DASH = '--';
 export const ROOT_NAME = '__root__';
 export const FUNCTION_LIBRARY_NODE = '__function_library__';
 
@@ -989,7 +991,10 @@ function addEdgeToGraph(
 }
 
 // minh
-// import * as data from 'https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json';
+export interface relAttr {
+  key: string,
+  value: string
+}
 
 function rawNodeGenerator() {
   let rawNodesgene = [];
@@ -1001,38 +1006,224 @@ function rawNodeGenerator() {
     let pickActivity = _.pick(Data, ["activity"]);
     let pickAgent = _.pick(Data, ["agent"]);
 
+    // filter and get the key of the object, then return the array with keys
     let procEntity = _.keys(pickEntity["entity"]);
     let procActivity = _.keys(pickActivity["activity"]);
     let procAgent = _.keys(pickAgent["agent"]);
 
-    //
-    
+    // omit all unnecessary keys to return all relations
+    let pickData = _.omit(Data, ["entity", "activity", "agent", "prefix"]);
 
+    console.log(pickData,' pickData');
 
-    //
+    let procElemT = [];
+    // refined data into [{head:.., tail:.., relation:..}, {}, ..]
+    Object.keys(pickData).forEach(function(key) {
+      let elem = _.values(pickData[key]);
+      for (let l = 0; l < elem.length; l++) {
+        elem[l]["relation"] = key;
+        // compare the key to modify head and tail
+        Object.keys(elem[l]).forEach(function(k) {
+          /** PROV-DM Relations
+           * Formation: relation = head + tail
+           * Entity - Entity --------------------------------------------
+           * wasDerivedFrom   = prov:generatedEntity + prov:usedEntity
+           * Revision
+           * Quotation
+           * PrimarySource
+           * alternateOf      = prov:alternate2      + prov:alternate1
+           * specializationOf = prov:specificEntity  + prov:generalEntity
+           * hadMember
+           * Activity - Activity ----------------------------------------
+           * wasInformedBy    = 
+           * Agent - Agent ----------------------------------------------
+           * actedOnBehalfOf  = prov:delegate        + prov:responsible
+           */
+          if (key == "wasDerivedFrom" || key == "alternateOf" || key == "specializationOf" || key == "actedOnBehalfOf") {
+            if (k == "prov:generatedEntity" || k == "prov:alternate2" || k == "prov:specificEntity" || k == "prov:delegate") {
+              elem[l]['head'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:usedEntity" || k == "prov:alternate1" || k == "prov:generalEntity" || k == "prov:responsible") {
+              elem[l]['tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:activity") {
+              elem[l]['second_tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+          } 
+          /* Activity - Entity ------------------------------------------
+           * used
+           * wasStartedBy
+           * wasEndedBy
+           */ 
+          else if (key == "used" || key == "wasStartedBy" || key == "wasEndedBy") {
+            if (k == "prov:activity") {
+              elem[l]['head'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:entity") {
+              elem[l]['tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:starter" || k == "prov:ender") {
+              elem[l]['second_tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+          } 
+          /* Entity - Activity ------------------------------------------
+           * wasGeneratedBy
+           * wasInvalidatedBy
+           */ 
+          else if (key == "wasGeneratedBy" || key == "wasInvalidatedBy") {
+            if (k == "prov:entity") {
+              elem[l]['head'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:activity") {
+              elem[l]['tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+          } 
+          /* Entity - Agent ---------------------------------------------
+           * wasAttributedTo
+           */ 
+          else if (key == "wasAttributedTo") {
+            if (k == "prov:entity") {
+              elem[l]['head'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:agent") {
+              elem[l]['tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+          } 
+          /* Activity - Agent -------------------------------------------
+           * wasAssociatedWith
+           */ 
+          else if (key == "wasAssociatedWith") {
+            if (k == "prov:activity") {
+              elem[l]['head'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:agent") {
+              elem[l]['tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+            if (k == "prov:plan") {
+              elem[l]['second_tail'] = elem[l][k];
+              delete elem[l][k];
+            }
+          }
+        });
+      }
+      procElemT.push(elem);
+    });
+    // concat/combine arrays in array
+    let procElem = [].concat.apply([], procElemT);
+    console.log(procElem,' procElem');
+
+    function secondTailInput(x) {
+      let splitSecondTail = procElem[x].second_tail.split(':');
+      // push data into input element
+      objData["input"].push(splitSecondTail[0] + NAMESPACE_DELIM + NAMESPACE_EX + splitSecondTail[1]);
+      // there will be no attr (label) for split edges
+    }
+
+    function createInputAttr(x) {
+      let splitHead = procElem[x].head.split(':');
+      let splitTail = procElem[x].tail.split(':');
+      // Check if has second tail
+      if (procElem[x].second_tail) {
+        secondTailInput(x);
+      } else {
+        // push data into input and attr element
+        objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
+        attrVal.key = splitHead[0] + NAMESPACE_DELIM + splitHead[1] + NAMESPACE_DASH + splitTail[0] + NAMESPACE_DELIM + splitTail[1];
+        attrVal.value = procElem[x].relation;
+        objData.attr.push(attrVal);
+        attrVal = {} as relAttr;
+      }
+    }
+
+    // push data into each Entity, Activity, Agent, and Extra Nodes
     let objData = {} as OpNode;
+    let attrVal = {} as relAttr;
+    // Entity
     for (let i = 0; i < procEntity.length; i++) {
-      let splitData = procEntity[i].split(":");
+      let splitData = procEntity[i].split(':');
       objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
       objData.op = "entity";
+      objData.attr = [];
+      objData["input"] = [];
+      for (let x = 0; x < procElem.length; x++) {
+        // Check if has one or two tails
+        if (procElem[x].tail == procEntity[i]) {
+          createInputAttr(x);
+        } else if (procElem[x].second_tail == procEntity[i]) {
+          secondTailInput(x);
+        }
+      }
       rawNodesgene.push(objData);
       objData = {} as OpNode;
     }
+    // Activity
     for (let i = 0; i < procActivity.length; i++) {
-      let splitData = procActivity[i].split(":");
+      let splitData = procActivity[i].split(':');
       objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
       objData.op = "activity";
+      objData.attr = [];
+      objData["input"] = [];
+      for (let x = 0; x < procElem.length; x++) {
+        // Check if has one or two tails
+        if (procElem[x].tail == procActivity[i]) {
+          createInputAttr(x);
+        } else if (procElem[x].second_tail == procActivity[i]) {
+          secondTailInput(x);
+        }
+      }
       rawNodesgene.push(objData);
       objData = {} as OpNode;
     }
+    // Agent
     for (let i = 0; i < procAgent.length; i++) {
-      let splitData = procAgent[i].split(":");
+      let splitData = procAgent[i].split(':');
       objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
       objData.op = "agent";
+      objData.attr = [];
+      objData["input"] = [];
+      for (let x = 0; x < procElem.length; x++) {
+        // Check if has one or two tails
+        if (procElem[x].tail == procAgent[i]) {
+          createInputAttr(x);
+        } else if (procElem[x].second_tail == procAgent[i]) {
+          secondTailInput(x);
+        }
+      }
       rawNodesgene.push(objData);
       objData = {} as OpNode;
     }
-    return rawNodesgene;
+    // Extra Nodes
+    for (let e = 0; e < procElem.length; e++) {
+      if (procElem[e].second_tail) {
+        let splitSecondTail = procElem[e].second_tail.split(':');
+        let splitHead = procElem[e].head.split(':');
+        objData.name = splitSecondTail[0] + NAMESPACE_DELIM + NAMESPACE_EX + splitSecondTail[1];
+        objData.op = "ex";
+        objData.attr = [];
+        objData["input"] = [];
+        // push data into input and attr element
+        objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
+        attrVal.key = splitHead[0] + NAMESPACE_DELIM + splitHead[1] + NAMESPACE_DASH + objData.name;
+        attrVal.value = procElem[e].relation;
+        objData.attr.push(attrVal);
+        attrVal = {} as relAttr;
+
+        rawNodesgene.push(objData);
+        objData = {} as OpNode;
+      }
+    }
   }
   
   function processData(errors, Data) {
@@ -1042,97 +1233,21 @@ function rawNodeGenerator() {
   }
   
   d3.queue()
-      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
+      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data1.json")
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data3.json")
+
+      // Some random data
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data4.json")
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data5.json")
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data6.json")
       .await(processData);
 
-  /* let rawNodesgene = [
-    // {
-    //   "name":"init",
-    //   "op":"NoOp",
-    //   // "input": [
-    //   //   "Recipes/bake",
-    //   //   "Products/cake"
-    //   // ],
-    //   // "attr": []
-    // },
-    {
-      "name":"Recipes/bake",
-      "op":"activity",
-      // "input":[
-      //   "Products/cake"
-      // ],
-      // "attr":[  
-      //   {  
-      //     "key":"Products/cake--Recipes/bake", // start--end
-      //     "value":"wasGenereatedBy"
-      //   }
-      // ]
-    },
-    {
-      "name":"Products/cake",
-      "op":"entity",
-      // "attr":[]
-    },
-    {
-      "name":"Recipes/ingredients",
-      "op":"entity",
-      // "input":[
-      //   "Recipes/bake",
-      //   "Products/cake"
-      // ],
-      // "attr":[  
-      //   {
-      //     "key":"Recipes/bake--Recipes/ingredients",
-      //     "value":"used"
-      //   },
-      //   {
-      //     "key":"Products/cake--Recipes/ingredients",
-      //     "value":"wasDerivedFrom"
-      //   }
-      // ]
-    },
-    {
-      "name":"Recipes/spices",
-      "op":"entity",
-      // "input":[
-      //   "Recipes/bake",
-      //   "Products/cake"
-      // ],
-      // "attr":[  
-      //   {
-      //     "key":"Recipes/bake--Recipes/spices",
-      //     "value":"used"
-      //   },
-      //   {
-      //     "key":"Products/cake--Recipes/spices",
-      //     "value":"wasRevisionOf"
-      //   }
-      // ]
-    },
-    {
-      "name":"Staff/chef",
-      "op":"agent",
-      // "input":[
-      //   "Recipes/bake",
-      //   "Products/cake"
-      // ],
-      // "attr":[
-      //   {
-      //     "key":"Recipes/bake--Staff/chef",
-      //     "value":"wasAssociatedWith"
-      //   },
-      //   {
-      //     "key":"Products/cake--Staff/chef",
-      //     "value":"wasAttributedTo"
-      //   }
-      // ]
-    }
-  ]; */
-
-  console.log(rawNodesgene,' rawNodes');
+  console.log(rawNodesgene,' rawNodesgene');
 
   return rawNodesgene;
 }
+// end minh
 
 export function build(
     graphDef: tf.graph.proto.GraphDef, params: BuildParams,
@@ -1155,102 +1270,164 @@ export function build(
   let isInEmbeddedPred = getEmbedPredicate(params.inEmbeddingTypes);
   let isOutEmbeddedPred = getEmbedPredicate(params.outEmbeddingTypes);
   let embeddingNodeNames: string[] = [];
+  // original
   // let rawNodes = graphDef.node;
 
+  // minh
   let rawNodes = rawNodeGenerator();
 
   // Main with Nest
   /* let rawNodes = [
+    // {
+    //   "name":"init",
+    //   "op":"NoOp",
+    //   // "input": [
+    //   //   "recipes/bake",
+    //   //   "products/cake"
+    //   // ],
+    //   // "attr": []
+    // },
     {
-      "name":"init",
-      "op":"NoOp",
+      "name":"recipes/combine",
+      "op":"activity",
       "input": [
-        "Recipes/bake",
-        "Products/cake"
+        "recipes/ex_combine"
       ],
       "attr": []
     },
     {
-      "name":"Recipes/bake",
+      "name":"recipes/prepare",
       "op":"activity",
-      "input":[
-        "Products/cake"
+      "input": [
+        "recipes/ex_prepare"
       ],
-      "attr":[  
-        {  
-          "key":"Products/cake--Recipes/bake", // start--end
-          "value":"wasGenereatedBy"
-        }
-      ]
+      "attr": []
     },
     {
-      "name":"Products/cake",
+      "name":"staff/instructions",
       "op":"entity",
-      "attr":[]
+      "input": [
+        "staff/ex_instructions"
+      ],
+      "attr": []
     },
     {
-      "name":"Recipes/ingredients",
-      "op":"entity",
-      "input":[
-        "Recipes/bake",
-        "Products/cake"
+      "name":"recipes/ex_combine",
+      "op":"ex",
+      "input": [
+        "products/cake"
       ],
-      "attr":[  
+      "attr": [
         {
-          "key":"Recipes/bake--Recipes/ingredients",
-          "value":"used"
-        },
-        {
-          "key":"Products/cake--Recipes/ingredients",
+          "key":"products/cake--recipes/ex_combine",
           "value":"wasDerivedFrom"
         }
       ]
     },
     {
-      "name":"Recipes/spices",
+      "name":"recipes/ex_prepare",
+      "op":"ex",
+      "input": [
+        "products/cake"
+      ],
+      "attr": [
+        {
+          "key":"products/cake--recipes/ex_prepare",
+          "value":"wasDerivedFrom"
+        }
+      ]
+    },
+    {
+      "name":"staff/ex_instructions",
+      "op":"ex",
+      "input": [
+        "recipes/bake"
+      ],
+      "attr": [
+        {
+          "key":"recipes/bake--staff/ex_instructions",
+          "value":"wasAssociatedWith"
+        }
+      ]
+    },
+    {
+      "name":"recipes/bake",
+      "op":"activity",
+      "input":[
+        "products/cake",
+        "recipes/nutela"
+      ],
+      "attr":[  
+        {  
+          "key":"products/cake--recipes/bake", // head--tail
+          "value":"wasGenereatedBy"
+        }
+      ]
+    },
+    {
+      "name":"products/cake",
+      "op":"entity",
+      "attr":[]
+    },
+    {
+      "name":"recipes/spices",
       "op":"entity",
       "input":[
-        "Recipes/bake",
-        "Products/cake"
+        "recipes/bake",
+        // "products/cake"
+        "recipes/ex_combine"
       ],
       "attr":[  
         {
-          "key":"Recipes/bake--Recipes/spices",
+          "key":"recipes/bake--recipes/spices",
           "value":"used"
-        },
-        {
-          "key":"Products/cake--Recipes/spices",
-          "value":"wasRevisionOf"
         }
+        // {
+        //   "key":"products/cake--recipes/spices",
+        //   "value":"wasDerivedFrom"
+        // }
       ]
     },
     {
-      "name":"Staff/chef",
+      "name":"recipes/ingredients",
+      "op":"entity",
+      "input":[
+        "recipes/bake",
+        // "products/cake"
+        "recipes/ex_prepare"
+      ],
+      "attr":[  
+        {
+          "key":"recipes/bake--recipes/ingredients",
+          "value":"used"
+        },
+        // {
+        //   "key":"products/cake--recipes/ingredients",
+        //   "value":"wasDerivedFrom"
+        // }
+      ]
+    },
+    {
+      "name":"staff/chef",
       "op":"agent",
       "input":[
-        "Recipes/bake",
-        "Products/cake"
+        // "recipes/bake",
+        "staff/ex_instructions",
+        "products/cake"
       ],
       "attr":[
+        // {
+        //   "key":"recipes/bake--staff/chef",
+        //   "value":"wasAssociatedWith"
+        // },
         {
-          "key":"Recipes/bake--Staff/chef",
-          "value":"wasAssociatedWith"
-        },
-        {
-          "key":"Products/cake--Staff/chef",
+          "key":"products/cake--staff/chef",
           "value":"wasAttributedTo"
         }
       ]
-    },
-    {
-      "name":"Staff/chef2",
-      "op":"agent",
-      "input":[
-        "Staff/chef"
-      ],
-      "attr":[]
     }
   ]; */
+  // console.log(rawNodes,' rawNodes');
 
   // Main w/o Nest
   /* let rawNodes = [

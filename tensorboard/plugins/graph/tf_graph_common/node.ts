@@ -342,6 +342,13 @@ function labelBuild(nodeGroup, renderNodeInfo: render.RenderNodeInfo,
   let namePath = renderNodeInfo.node.name.split('/');
   let text = namePath[namePath.length - 1];
 
+  // minh
+  // Clear the label of the extra nodes
+  let splitText = text.split('_');
+  if (splitText[0] == "ex") {
+    text = '';
+  }
+
   // Truncate long labels for unexpanded Metanodes.
   let useFontScale = renderNodeInfo.node.type === NodeType.META &&
     !renderNodeInfo.expanded;
@@ -475,7 +482,6 @@ function labelPosition(nodeGroup, cx: number, cy: number,
  * @param nodeClass class for the element.
  * @return Selection of the shape.
  */
-let GlobalOp = '';
 export function buildShape(nodeGroup, d, nodeClass: string): d3.Selection<any, any, any, any> {
   // Create a group to house the underlying visual elements.
   let shapeGroup = scene.selectOrCreateChild(nodeGroup, 'g', nodeClass);
@@ -486,16 +492,16 @@ export function buildShape(nodeGroup, d, nodeClass: string): d3.Selection<any, a
       // scene.selectOrCreateChild(shapeGroup, 'ellipse', Class.Node.COLOR_TARGET);
       // minh
       if (d.node.op == 'agent') {
-        GlobalOp = 'agent';
         scene.selectOrCreateChild(shapeGroup, 'polygon', Class.Node.COLOR_TARGET);
       } else if (d.node.op == 'activity') {
-        GlobalOp = 'activity';
         scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
             .attr('rx', 0.3).attr('ry', 0.3);
       } else if (d.node.op == 'entity') {
-        GlobalOp = 'entity';
         scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
             .attr('rx', 3).attr('ry', 3);
+      } else if (d.node.op == 'ex') {
+        scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
+            .attr('rx', 10).attr('ry', 10).attr('width', 5).attr('height', 5);
       } else {
         scene.selectOrCreateChild(shapeGroup, 'ellipse', Class.Node.COLOR_TARGET);
       }
@@ -559,12 +565,15 @@ function position(nodeGroup, d: render.RenderNodeInfo) {
       // scene.positionEllipse(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
       // labelPosition(nodeGroup, cx, d.y, d.labelOffset);
       // minh
-      if (GlobalOp == 'agent') {
+      if (d.node["op"] == 'agent') {
         let shape = scene.selectChild(shapeGroup, 'polygon');
         scene.positionPoly(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
-      } else if (GlobalOp == 'activity' || GlobalOp == 'entity') {
+      } else if (d.node["op"] == 'activity' || d.node["op"] == 'entity') {
         let shape = scene.selectChild(shapeGroup, 'rect');
         scene.positionRect(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      } else if (d.node["op"] == 'ex') {
+        let shape = scene.selectChild(shapeGroup, 'rect');
+        scene.positionRect(shape, cx, d.y, 5, 5);
       } else {
         let shape = scene.selectChild(shapeGroup, 'ellipse');
         scene.positionEllipse(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
@@ -642,7 +651,17 @@ export function getFillForNode(templateIndex, colorBy,
             (<BridgeNode>renderInfo.node).inbound ? '#0ef' : '#fe0';
       } else {
         // Op nodes are white.
-        return 'white';
+        // return 'red';
+
+        // minh
+        // Opnodes color based on its operation
+        if (renderInfo.node["op"] == 'entity') {
+          return '#fffc87';
+        } else if (renderInfo.node["op"] == 'activity') {
+          return '#9fb1fc';
+        } else if (renderInfo.node["op"] == 'agent') {
+          return '#fed37f';
+        }
       }
     case ColorBy.DEVICE:
       if (renderInfo.deviceColors == null) {
@@ -763,7 +782,10 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
 
   // Choose outline to be darker version of node color if the node is a single
   // color and is not selected.
-  node.style('stroke', isSelected ? null : getStrokeForFill(fillColor));
+  // original
+  // node.style('stroke', isSelected ? null : getStrokeForFill(fillColor));
+  // minh
+  node.style('stroke', isSelected ? '#ff813d' : getStrokeForFill(fillColor));
 };
 
 /**
