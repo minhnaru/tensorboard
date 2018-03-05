@@ -98,7 +98,7 @@ tensorboard_html_binary = rule(
     implementation=_tensorboard_html_binary,
     executable=True,
     attrs={
-        "compilation_level": attr.string(default="SIMPLE"),
+        "compilation_level": attr.string(default="ADVANCED"),
         "input_path": attr.string(mandatory=True),
         "output_path": attr.string(mandatory=True),
         "data": attr.label_list(cfg="data", allow_files=True),
