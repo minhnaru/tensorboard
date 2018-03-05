@@ -1,235 +1,210 @@
 {
-    "wasDerivedFrom":{
-      "_:id20":{
-        "prov:usedEntity":"exn:article",
-        "prov:generatedEntity":"exb:quoteInBlogEntry-20130326",
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Quotation"
-        }
-      },
-      "_:id17":{
-        "prov:usedEntity":"exg:dataset1",
-        "prov:generatedEntity":"exg:dataSet2",
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Revision"
-        }
-      },
-      "_:id19":{
-        "prov:usedEntity":"exg:dataSet2",
-        "prov:generatedEntity":"exc:chart2"
-      },
-      "_:id18":{
-        "prov:usedEntity":"exc:chart1",
-        "prov:generatedEntity":"exc:chart2",
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Revision"
-        }
-      },
-      "_:id24":{
-        "prov:usedEntity":"exg:dataSet2",
-        "prov:generatedEntity":"exn:articleV2"
+  "wasAssociatedWith":{
+    "_:id22":{
+      "prov:role":"operator",
+      "prov:agent":"lr:ben.jolly",
+      "prov:activity":"rules:agribase_preclass_lut"
+    },
+    "_:id20":{
+      "prov:role":"operator",
+      "prov:agent":"lr:ben.jolly",
+      "prov:activity":"rules:lcdb_preclass_lut"
+    },
+    "_:id21":{
+      "prov:role":"author",
+      "prov:agent":"lr:mandersona",
+      "prov:activity":"rules:agribase_preclass_lut"
+    },
+    "_:id17":{
+      "prov:role":"author",
+      "prov:agent":"lr:mandersona",
+      "prov:activity":"rules:motu_classification"
+    },
+    "_:id19":{
+      "prov:role":"author",
+      "prov:agent":"lr:mandersona",
+      "prov:activity":"rules:lcdb_preclass_lut"
+    },
+    "_:id18":{
+      "prov:role":"operator",
+      "prov:agent":"lr:ben.jolly",
+      "prov:activity":"rules:motu_classification"
+    }
+  },
+  "wasDerivedFrom":{
+    "_:id23":{
+      "prov:usedEntity":"lris:48461-agribase-enhanced-001",
+      "prov:generatedEntity":"lris:agribase"
+    },
+    "_:id24":{
+      "prov:usedEntity":"lris:48460-publicprivatenzland01b",
+      "prov:generatedEntity":"lris:Ownshp"
+    },
+    "_:id25":{
+      "prov:usedEntity":"lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand",
+      "prov:generatedEntity":"lris:lcdb"
+    }
+  },
+  "used":{
+    "_:id15":{
+      "prov:entity":"results:Motu1",
+      "prov:activity":"rules:motu_classification"
+    },
+    "_:id14":{
+      "prov:entity":"lris:agribase",
+      "prov:activity":"rules:agribase_preclass_lut"
+    },
+    "_:id16":{
+      "prov:entity":"results:MOTU12",
+      "prov:activity":"rules:motu_classification"
+    },
+    "_:id13":{
+      "prov:entity":"lris:lcdb",
+      "prov:activity":"rules:lcdb_preclass_lut"
+    },
+    "_:id12":{
+      "prov:entity":"lris:Ownshp",
+      "prov:activity":"rules:motu_classification"
+    }
+  },
+  "actedOnBehalfOf":{
+    "_:id11":{
+      "prov:responsible":"lr:lr",
+      "prov:delegate":"lr:mandersona"
+    },
+    "_:id10":{
+      "prov:responsible":"lr:lr",
+      "prov:delegate":"lr:ben.jolly"
+    }
+  },
+  "wasAttributedTo":{
+    "_:id5":{
+      "prov:entity":"lris:48460-publicprivatenzland01b",
+      "prov:agent":"linz:linz"
+    },
+    "_:id4":{
+      "prov:entity":"lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand",
+      "prov:agent":"lr:lr"
+    },
+    "_:id7":{
+      "prov:entity":"results:Final",
+      "prov:agent":"lr:mandersona"
+    },
+    "_:id6":{
+      "prov:entity":"lris:48461-agribase-enhanced-001",
+      "prov:agent":"aq:aq"
+    },
+    "_:id9":{
+      "prov:entity":"results:MOTU12",
+      "prov:agent":"lr:mandersona"
+    },
+    "_:id8":{
+      "prov:entity":"results:Motu1",
+      "prov:agent":"lr:mandersona"
+    }
+  },
+  "agent":{
+    "lr:lr":{
+      "foaf:name":"Landcare Research",
+      "prov:type":{
+        "type":"prov:QUALIFIED_NAME",
+        "$":"prov:Organization"
       }
     },
-    "wasAssociatedWith":{
-      "_:id21":{
-        "prov:plan":"exg:instructions",
-        "prov:agent":"exg:edith",
-        "prov:activity":"exg:correct1"
-      },
-      "_:id22":{
-        "prov:role":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"exc:analyst"
-        },
-        "prov:agent":"exc:derek",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id23":{
-        "prov:agent":"exc:derek",
-        "prov:activity":"exc:illustrate1"
-      },
-      "_:id24":{
-        "prov:agent":"exc:derek",
-        "prov:activity":"exc:compose1"
+    "lr:mandersona":{
+      "foaf:name":"Andrew Manderson",
+      "prov:type":{
+        "type":"prov:QUALIFIED_NAME",
+        "$":"prov:Person"
       }
     },
-    "used":{
-      "_:id15":{
-        "prov:role":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"exc:regionsToAggregateBy"
-        },
-        "prov:entity":"exc:regionList",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id14":{
-        "prov:entity":"exg:dataset1",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id16":{
-        "prov:role":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"exc:dataToCompose"
-        },
-        "prov:entity":"exg:dataset1",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id13":{
-        "prov:entity":"exc:regionList",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id12":{
-        "prov:entity":"exc:composition1",
-        "prov:activity":"exc:illustrate1"
+    "aq:aq":{
+      "foaf:name":"Asure Quality",
+      "prov:type":{
+        "type":"prov:QUALIFIED_NAME",
+        "$":"prov:Organization"
       }
     },
-    "actedOnBehalfOf":{
-      "_:id11":{
-        "prov:responsible":"exc:chartgen",
-        "prov:delegate":"exc:derek"
+    "linz:linz":{
+      "foaf:name":"Land Information New Zealand",
+      "prov:type":{
+        "type":"prov:QUALIFIED_NAME",
+        "$":"prov:Organization"
       }
     },
-    "wasAttributedTo":{
-      "_:id10":{
-        "prov:entity":"exc:chart1",
-        "prov:agent":"exc:derek"
-      }
-    },
-    "agent":{
-      "exc:derek":{
-        "foaf:givenName":"Derek",
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Person"
-        },
-        "foaf:mbox":"<mailto:derek@example.org>"
-      },
-      "exg:edith":{
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Person"
-        }
-      },
-      "exc:chartgen":{
-        "foaf:name":"Chart Generators Inc",
-        "prov:type":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"prov:Organization"
-        }
-      }
-    },
-    "entity":{
-      "exc:regionList":{
-  
-      },
-      "exc:chart2":{
-  
-      },
-      "exc:chart1":{
-  
-      },
-      "exn:article":{
-        "dcterms:title":"Crime rises in cities"
-      },
-      "exg:instructions":{
-  
-      },
-      "exn:articleV1":{
-  
-      },
-      "exn:articleV2":{
-  
-      },
-      "exg:dataset1":{
-  
-      },
-      "exg:dataSet2":{
-  
-      },
-      "exc:composition1":{
-  
-      },
-      "exb:quoteInBlogEntry-20130326":{
-  
-      }
-    },
-    "prefix":{
-      "foaf":"http://xmlns.com/foaf/0.1/",
-      "exg":"http://www.example2.org#",
-      "exb":"http://www.example4.org#",
-      "exc":"http://www.example3.org#",
-      "exn":"http://www.example1.org#",
-      "dcterms":"http://purl.org/dc/terms/"
-    },
-    "alternateOf":{
-      "_:id9":{
-        "prov:alternate1":"exn:articleV1",
-        "prov:alternate2":"exn:articleV2"
-      }
-    },
-    "activity":{
-      "exc:compile1":{
-  
-      },
-      "exc:illustrate1":{
-  
-      },
-      "exc:compose1":{
-  
-      },
-      "exg:correct1":[
-        {
-          "prov:startTime":"2012-03-31T09:21:00+01:00",
-          "prov:endTime":"2012-04-01T15:21:00+01:00"
-        },
-        {
-  
-        }
-      ]
-    },
-    "specializationOf":{
-      "_:id7":{
-        "prov:generalEntity":"exn:article",
-        "prov:specificEntity":"exn:articleV1"
-      },
-      "_:id8":{
-        "prov:generalEntity":"exn:article",
-        "prov:specificEntity":"exn:articleV2"
-      }
-    },
-    "wasGeneratedBy":{
-      "_:id5":{
-        "prov:entity":"exg:dataSet2",
-        "prov:activity":"exg:correct1"
-      },
-      "_:id4":{
-        "prov:entity":"exc:chart2",
-        "prov:time":"2012-04-01T15:21:00+01:00",
-        "prov:activity":"exc:compile2"
-      },
-      "_:id6":{
-        "prov:entity":"exc:chart1",
-        "prov:time":"2012-03-02T10:30:00+00:00",
-        "prov:activity":"exc:compile1"
-      },
-      "_:id1":{
-        "prov:entity":"exc:chart1",
-        "prov:activity":"exc:illustrate1"
-      },
-      "_:id3":{
-        "prov:entity":"exc:composition1",
-        "prov:activity":"exc:compose1"
-      },
-      "_:id2":{
-        "prov:role":{
-          "type":"prov:QUALIFIED_NAME",
-          "$":"exc:composedData"
-        },
-        "prov:entity":"exc:composition1",
-        "prov:activity":"exc:compose1"
+    "lr:ben.jolly":{
+      "foaf:name":"Ben Jolly",
+      "prov:type":{
+        "type":"prov:QUALIFIED_NAME",
+        "$":"prov:Person"
       }
     }
+  },
+  "entity":{
+    "results:Final":{
+
+    },
+    "lris:agribase":{
+      "foaf:name":"Frmtyp2"
+    },
+    "results:MOTU12":{
+
+    },
+    "results:Motu1":{
+
+    },
+    "lris:lcdb":{
+      "foaf:name":"Class_2012"
+    },
+    "lris:48461-agribase-enhanced-001":{
+
+    },
+    "lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand":{
+
+    },
+    "lris:Ownshp":{
+      "foaf:name":"Ownshp"
+    },
+    "lris:48460-publicprivatenzland01b":{
+
+    }
+  },
+  "prefix":{
+    "foaf":"http://xmlns.com/foaf/0.1/",
+    "inputs":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/inputs/",
+    "linz":"http://www.linz.govt.nz/",
+    "rules":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/rules/",
+    "results":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/results/",
+    "aq":"https://www.asurequality.com",
+    "lr":"http://www.landcareresearch.co.nz/",
+    "lris":"https:/lris.scinfo.org.nz/layer/"
+  },
+  "activity":{
+    "rules:agribase_preclass_lut":{
+
+    },
+    "rules:motu_classification":{
+
+    },
+    "rules:lcdb_preclass_lut":{
+
+    }
+  },
+  "wasGeneratedBy":{
+    "_:id1":{
+      "prov:entity":"results:MOTU12",
+      "prov:time":"2018-03-01T10:36:51.934000+00:00",
+      "prov:activity":"rules:lcdb_preclass_lut"
+    },
+    "_:id3":{
+      "prov:entity":"results:Motu1",
+      "prov:time":"2018-03-01T10:36:51.934000+00:00",
+      "prov:activity":"rules:agribase_preclass_lut"
+    },
+    "_:id2":{
+      "prov:entity":"results:Final",
+      "prov:time":"2018-03-01T10:36:51.934000+00:00",
+      "prov:activity":"rules:motu_classification"
+    }
   }
+}
