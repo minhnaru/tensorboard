@@ -21,7 +21,8 @@ const TENSOR_SHAPE_DELIM = '×';
 export const MIN_EDGE_WIDTH = 0.75;
 
 /** The maximum stroke width of an edge. */
-export const MAX_EDGE_WIDTH = 12;
+// export const MAX_EDGE_WIDTH = 12;
+export const MAX_EDGE_WIDTH = 3;
 
 /** The exponent used in the power scale for edge thickness. */
 const EDGE_WIDTH_SCALE_EXPONENT = 0.3;
@@ -29,15 +30,24 @@ const EDGE_WIDTH_SCALE_EXPONENT = 0.3;
 /** The domain (min and max value) for the edge width. */
 const DOMAIN_EDGE_WIDTH_SCALE = [1, 5E6];
 
+// Minh
+export const EDGE_KEY_SEP = '--';
+
 export const EDGE_WIDTH_SCALE: d3.ScalePower<number, number> = d3.scalePow()
       .exponent(EDGE_WIDTH_SCALE_EXPONENT)
       .domain(DOMAIN_EDGE_WIDTH_SCALE)
       .range([MIN_EDGE_WIDTH, MAX_EDGE_WIDTH])
       .clamp(true);
 
+// let arrowheadMap =
+//     d3.scaleQuantize<String>().domain([MIN_EDGE_WIDTH, MAX_EDGE_WIDTH]).range([
+//       'small', 'medium', 'large', 'xlarge'
+//     ]);
+
+//Minh
 let arrowheadMap =
     d3.scaleQuantize<String>().domain([MIN_EDGE_WIDTH, MAX_EDGE_WIDTH]).range([
-      'small', 'medium', 'large', 'xlarge'
+      'small'
     ]);
 
 /** Minimum stroke width to put edge labels in the middle of edges */
@@ -124,19 +134,100 @@ export function buildGroup(sceneGroup,
  */
 export function getLabelForBaseEdge(
     baseEdge: BaseEdge, renderInfo: render.RenderGraphInfo): string {
-  let node = <OpNode>renderInfo.getNodeByName(baseEdge.v);
-  if (node.outputShapes == null || _.isEmpty(node.outputShapes)) {
-    return null;
+  // let node = <OpNode>renderInfo.getNodeByName(baseEdge.v); // original
+  let startNode = <OpNode>renderInfo.getNodeByName(baseEdge.v); // start Node
+  let endNode = <OpNode>renderInfo.getNodeByName(baseEdge.w); // end Node
+  /* startNode & endNode
+  |  +-------+        +-----+
+  |  | start +------->+ end |
+  |  +-------+        +-----+
+  */
+
+  // console.log('-------------------------AAAAA--------------------------');
+  // console.log(baseEdge.v, ' baseedge V start');
+  // console.log(baseEdge.w, ' baseedge W end');
+  // console.log(startNode, ' startNode');
+  // console.log(endNode, ' endNode');
+
+  // Combine to match with the key in Node
+  let comb = baseEdge.v + EDGE_KEY_SEP + baseEdge.w;
+
+  // if (endNode.attr.length > 0 && startNode.inputs.length > 0) {
+  //   let vaf = _.find(endNode.attr, function(o) {
+  //     return o.key = comb;
+  //   });
+  //   console.log(vaf, ' find');
+  // }
+
+  // if (endNode.attr.length === 0 && startNode.inputs.length === 0) {
+  //   return 'no label';
+  // }
+  if (endNode.attr.length === 0) {
+    // return 'no label';
+    return ' ';
   }
-  let shape = node.outputShapes[baseEdge.outputTensorKey];
-  if (shape == null) {
-    return null;
+  for (let i = 0; i < endNode.attr.length; i++) {
+    if (comb == endNode.attr[i].key) {
+      return endNode.attr[i].value;
+    }
   }
-  if (shape.length === 0) {
-    return 'scalar';
-  }
-  return shape.map(size => { return size === -1 ? '?' : size; })
-      .join(TENSOR_SHAPE_DELIM);
+  
+  // if (endNode.attr.length > 0 && startNode.inputs.length > 0) {
+  //   for (let i = 0; i < endNode.attr.length; i++) {
+  //     if (startNode.inputs[i].name = endNode.attr[i].key) {
+  //       console.log(endNode.attr[i].value, ' endNode Value');
+  //       return endNode.attr[i].value;
+  //     } else {
+  //       return 'null-in';
+  //     }
+  //   }
+  // } else {
+  //   return 'null-out';
+  // }
+  
+
+  // return null;
+
+  // if (startNode.op == 'entity' && endNode.op == 'activity') {
+  //   // return 'wasGeneratedBy';
+  //   // return node2.device;
+  //   // return node.inputs[0].name;
+  //   if (node.inputs != undefined && node.inputs.length != 0) {
+  //     console.log('abc');
+  //     // return node.inputs[0].name;
+  //     return 'minh';
+  //   } else {
+  //     return 'bu';
+  //   }
+  // } else if (startNode.op == 'activity' && endNode.op == 'entity') {
+  //   return 'used';
+  // } else if (startNode.op == 'entity' && endNode.op == 'entity') {
+  //   if (baseEdge.w == 'Recipes/ingredients' && baseEdge.v == 'Recipes/cake') {
+  //     return 'minh';
+  //   } else {
+  //     return 'wasDerivedFrom';
+  //   } 
+  // }  else if (startNode.op == 'activity' && endNode.op == 'agent') {
+  //   return 'wasAssociatedWith';
+  // } else if (startNode.op == 'entity' && endNode.op == 'agent') {
+  //   return 'wasAttributedTo';
+  // }
+
+  // original
+  // if (node.outputShapes == null || _.isEmpty(node.outputShapes)) {
+  //   return null;
+  // }
+  // let shape = node.outputShapes[baseEdge.outputTensorKey];
+  // console.log(shape, ' shape');
+  // if (shape == null) {
+  //   return null;
+  // }
+  // if (shape.length === 0) {
+  //   // return 'scalar';
+  //   return 'no label';
+  // }
+  // return shape.map(size => { return size === -1 ? '?' : size; })
+  //     .join(TENSOR_SHAPE_DELIM);
 }
 
 /**
@@ -148,7 +239,7 @@ export function getLabelForEdge(metaedge: Metaedge,
     renderInfo: render.RenderGraphInfo): string {
   let isMultiEdge = metaedge.baseEdgeList.length > 1;
   return isMultiEdge ?
-      metaedge.baseEdgeList.length + ' tensors' :
+      metaedge.baseEdgeList.length + ' edges' :
       getLabelForBaseEdge(metaedge.baseEdgeList[0], renderInfo);
 }
 
@@ -305,7 +396,7 @@ export function appendEdge(edgeGroup, d: EdgeData,
         .attr('startOffset', '50%')
         .attr('text-anchor', 'middle')
         .attr('dominant-baseline', 'central')
-      .text(labelForEdge);
+        .text(labelForEdge);
 };
 
 export let interpolate: d3.Line<{x: number, y: number}> = d3.line<{x: number, y: number}>()

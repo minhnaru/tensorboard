@@ -342,6 +342,13 @@ function labelBuild(nodeGroup, renderNodeInfo: render.RenderNodeInfo,
   let namePath = renderNodeInfo.node.name.split('/');
   let text = namePath[namePath.length - 1];
 
+  // minh
+  // Clear the label of the extra nodes
+  let splitText = text.split('_');
+  if (splitText[0] == "ex") {
+    text = '';
+  }
+
   // Truncate long labels for unexpanded Metanodes.
   let useFontScale = renderNodeInfo.node.type === NodeType.META &&
     !renderNodeInfo.expanded;
@@ -481,7 +488,23 @@ export function buildShape(nodeGroup, d, nodeClass: string): d3.Selection<any, a
   // TODO: DOM structure should be templated in HTML somewhere, not JS.
   switch (d.node.type) {
     case NodeType.OP:
-      scene.selectOrCreateChild(shapeGroup, 'ellipse', Class.Node.COLOR_TARGET);
+      // original
+      // scene.selectOrCreateChild(shapeGroup, 'ellipse', Class.Node.COLOR_TARGET);
+      // minh
+      if (d.node.op == 'agent') {
+        scene.selectOrCreateChild(shapeGroup, 'polygon', Class.Node.COLOR_TARGET);
+      } else if (d.node.op == 'activity') {
+        scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
+            .attr('rx', 0.3).attr('ry', 0.3);
+      } else if (d.node.op == 'entity') {
+        scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
+            .attr('rx', 3).attr('ry', 3);
+      } else if (d.node.op == 'ex') {
+        scene.selectOrCreateChild(shapeGroup, 'rect', Class.Node.COLOR_TARGET)
+            .attr('rx', 10).attr('ry', 10).attr('width', 5).attr('height', 5);
+      } else {
+        scene.selectOrCreateChild(shapeGroup, 'ellipse', Class.Node.COLOR_TARGET);
+      }
       break;
     case NodeType.SERIES:
       // Choose the correct stamp to use to represent this series.
@@ -536,9 +559,25 @@ function position(nodeGroup, d: render.RenderNodeInfo) {
   let cx = layout.computeCXPositionOfNodeShape(d);
   switch (d.node.type) {
     case NodeType.OP: {
+      // original
       // position shape
-      let shape = scene.selectChild(shapeGroup, 'ellipse');
-      scene.positionEllipse(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      // let shape = scene.selectChild(shapeGroup, 'ellipse');
+      // scene.positionEllipse(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      // labelPosition(nodeGroup, cx, d.y, d.labelOffset);
+      // minh
+      if (d.node["op"] == 'agent') {
+        let shape = scene.selectChild(shapeGroup, 'polygon');
+        scene.positionPoly(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      } else if (d.node["op"] == 'activity' || d.node["op"] == 'entity') {
+        let shape = scene.selectChild(shapeGroup, 'rect');
+        scene.positionRect(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      } else if (d.node["op"] == 'ex') {
+        let shape = scene.selectChild(shapeGroup, 'rect');
+        scene.positionRect(shape, cx, d.y, 5, 5);
+      } else {
+        let shape = scene.selectChild(shapeGroup, 'ellipse');
+        scene.positionEllipse(shape, cx, d.y, d.coreBox.width, d.coreBox.height);
+      }
       labelPosition(nodeGroup, cx, d.y, d.labelOffset);
       break;
     }
@@ -612,7 +651,17 @@ export function getFillForNode(templateIndex, colorBy,
             (<BridgeNode>renderInfo.node).inbound ? '#0ef' : '#fe0';
       } else {
         // Op nodes are white.
-        return 'white';
+        // return 'red';
+
+        // minh
+        // Opnodes color based on its operation
+        if (renderInfo.node["op"] == 'entity') {
+          return '#fffc87';
+        } else if (renderInfo.node["op"] == 'activity') {
+          return '#9fb1fc';
+        } else if (renderInfo.node["op"] == 'agent') {
+          return '#fed37f';
+        }
       }
     case ColorBy.DEVICE:
       if (renderInfo.deviceColors == null) {
@@ -733,7 +782,10 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
 
   // Choose outline to be darker version of node color if the node is a single
   // color and is not selected.
-  node.style('stroke', isSelected ? null : getStrokeForFill(fillColor));
+  // original
+  // node.style('stroke', isSelected ? null : getStrokeForFill(fillColor));
+  // minh
+  node.style('stroke', isSelected ? '#ff813d' : getStrokeForFill(fillColor));
 };
 
 /**

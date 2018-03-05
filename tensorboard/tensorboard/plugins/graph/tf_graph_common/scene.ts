@@ -228,7 +228,7 @@ export function panToNode(nodeName: String, svg, zoomG, d3zoom): boolean {
     // We translate by this amount. We divide the X and Y translations by the
     // scale to undo how translateBy scales the translations (in d3 v4).
     const svgTransform = d3.zoomTransform(svg);
-    d3.select(svg).transition().duration(500).call(
+    d3.select(svg).transition().duration(2500).call(
         d3zoom.translateBy, dx / svgTransform.k, dy / svgTransform.k);
 
     return true;
@@ -455,6 +455,32 @@ export function translate(selection, x0: number, y0: number) {
     selection = selection.transition('position');
   }
   selection.attr('transform', 'translate(' + x0 + ',' + y0 + ')');
+};
+
+/** minh
+ * Helper for setting position of a svg polygon
+ * @param polygon polygon to set position of.
+ * @param px Center x.
+ * @param py Center x.
+ * @param x Width to set.
+ * @param y Height to set.
+ */
+export function positionPoly(polygon, px: number, py: number, x: number,
+  y: number) {
+polygon.transition()
+  .attr('points', (px) + ',' + (py-y/1.5) + ' ' +
+                  (px-x/2) + ',' + (py-y/3) + ' ' +
+                  (px-x/2) + ',' + (py+y/2) + ' ' +
+                  (px+x/2) + ',' + (py+y/2) + ' ' +
+                  (px+x/2) + ',' + (py-y/3));
+                  
+  // polygon.transition()
+                  // .attr('points', '5,0 0,5 0,10 10,10 10,5');
+                  // .attr('points', (px) + ',' + (py-4) + ' ' +
+                  //                 (px-7) + ',' + (py-2) + ' ' +
+                  //                 (px-7) + ',' + (py+3) + ' ' +
+                  //                 (px+7) + ',' + (py+3) + ' ' +
+                  //                 (px+7) + ',' + (py-2));
 };
 
 /**
