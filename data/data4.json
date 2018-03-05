@@ -1,210 +1,99 @@
 {
   "wasAssociatedWith":{
-    "_:id22":{
-      "prov:role":"operator",
-      "prov:agent":"lr:ben.jolly",
-      "prov:activity":"rules:agribase_preclass_lut"
+    "_:id1":{
+      "prov:agent":"dataset1:Bob",
+      "prov:activity":"dataset1:analysis"
     },
-    "_:id20":{
-      "prov:role":"operator",
-      "prov:agent":"lr:ben.jolly",
-      "prov:activity":"rules:lcdb_preclass_lut"
-    },
-    "_:id21":{
-      "prov:role":"author",
-      "prov:agent":"lr:mandersona",
-      "prov:activity":"rules:agribase_preclass_lut"
-    },
-    "_:id17":{
-      "prov:role":"author",
-      "prov:agent":"lr:mandersona",
-      "prov:activity":"rules:motu_classification"
-    },
-    "_:id19":{
-      "prov:role":"author",
-      "prov:agent":"lr:mandersona",
-      "prov:activity":"rules:lcdb_preclass_lut"
-    },
-    "_:id18":{
-      "prov:role":"operator",
-      "prov:agent":"lr:ben.jolly",
-      "prov:activity":"rules:motu_classification"
+    "_:id2":{
+      "prov:agent":"dataset1:alice",
+      "prov:activity":"dataset1:editing"
     }
   },
   "wasDerivedFrom":{
-    "_:id23":{
-      "prov:usedEntity":"lris:48461-agribase-enhanced-001",
-      "prov:generatedEntity":"lris:agribase"
+    "_:id4":{
+      "prov:usedEntity":"dataset1:edited_report",
+      "prov:generatedEntity":"final_article:final_article"
     },
-    "_:id24":{
-      "prov:usedEntity":"lris:48460-publicprivatenzland01b",
-      "prov:generatedEntity":"lris:Ownshp"
-    },
-    "_:id25":{
-      "prov:usedEntity":"lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand",
-      "prov:generatedEntity":"lris:lcdb"
+    "_:id3":{
+      "prov:usedEntity":"dataset1:edited_report",
+      "prov:generatedEntity":"dataset1:report"
     }
   },
   "used":{
-    "_:id15":{
-      "prov:entity":"results:Motu1",
-      "prov:activity":"rules:motu_classification"
-    },
-    "_:id14":{
-      "prov:entity":"lris:agribase",
-      "prov:activity":"rules:agribase_preclass_lut"
-    },
-    "_:id16":{
-      "prov:entity":"results:MOTU12",
-      "prov:activity":"rules:motu_classification"
-    },
-    "_:id13":{
-      "prov:entity":"lris:lcdb",
-      "prov:activity":"rules:lcdb_preclass_lut"
-    },
-    "_:id12":{
-      "prov:entity":"lris:Ownshp",
-      "prov:activity":"rules:motu_classification"
+    "_:id5":{
+      "prov:entity":"dataset1:edited_report",
+      "prov:activity":"dataset1:editing"
     }
   },
   "actedOnBehalfOf":{
-    "_:id11":{
-      "prov:responsible":"lr:lr",
-      "prov:delegate":"lr:mandersona"
+    "_:id7":{
+      "prov:responsible":"dataset1:newspaper",
+      "prov:delegate":"dataset1:alice"
     },
-    "_:id10":{
-      "prov:responsible":"lr:lr",
-      "prov:delegate":"lr:ben.jolly"
+    "_:id6":{
+      "prov:responsible":"dataset1:newspaper",
+      "prov:delegate":"dataset1:Bob"
     }
   },
   "wasAttributedTo":{
-    "_:id5":{
-      "prov:entity":"lris:48460-publicprivatenzland01b",
-      "prov:agent":"linz:linz"
-    },
-    "_:id4":{
-      "prov:entity":"lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand",
-      "prov:agent":"lr:lr"
-    },
-    "_:id7":{
-      "prov:entity":"results:Final",
-      "prov:agent":"lr:mandersona"
-    },
-    "_:id6":{
-      "prov:entity":"lris:48461-agribase-enhanced-001",
-      "prov:agent":"aq:aq"
-    },
     "_:id9":{
-      "prov:entity":"results:MOTU12",
-      "prov:agent":"lr:mandersona"
+      "prov:entity":"dataset1:edited_report",
+      "prov:agent":"dataset1:alice"
     },
     "_:id8":{
-      "prov:entity":"results:Motu1",
-      "prov:agent":"lr:mandersona"
+      "prov:entity":"dataset1:report",
+      "prov:agent":"dataset1:Bob"
     }
   },
   "agent":{
-    "lr:lr":{
-      "foaf:name":"Landcare Research",
-      "prov:type":{
-        "type":"prov:QUALIFIED_NAME",
-        "$":"prov:Organization"
-      }
+    "dataset1:alice":{
+      "foaf:givenName":"Alice"
     },
-    "lr:mandersona":{
-      "foaf:name":"Andrew Manderson",
-      "prov:type":{
-        "type":"prov:QUALIFIED_NAME",
-        "$":"prov:Person"
-      }
+    "dataset1:Bob":{
+      "foaf:givenName":"Bob"
     },
-    "aq:aq":{
-      "foaf:name":"Asure Quality",
-      "prov:type":{
-        "type":"prov:QUALIFIED_NAME",
-        "$":"prov:Organization"
-      }
-    },
-    "linz:linz":{
-      "foaf:name":"Land Information New Zealand",
-      "prov:type":{
-        "type":"prov:QUALIFIED_NAME",
-        "$":"prov:Organization"
-      }
-    },
-    "lr:ben.jolly":{
-      "foaf:name":"Ben Jolly",
-      "prov:type":{
-        "type":"prov:QUALIFIED_NAME",
-        "$":"prov:Person"
-      }
+    "dataset1:newspaper":{
+      "foaf:givenName":"Newspaper_X"
     }
   },
   "entity":{
-    "results:Final":{
-
+    "dataset1:report":{
+      "prov:label":"Report"
     },
-    "lris:agribase":{
-      "foaf:name":"Frmtyp2"
+    "dataset1:dataset1":{
+      "dcterms:title":"Dataset1"
     },
-    "results:MOTU12":{
-
+    "final_article:final_article":{
+      "dcterms:title":"Final_article"
     },
-    "results:Motu1":{
-
-    },
-    "lris:lcdb":{
-      "foaf:name":"Class_2012"
-    },
-    "lris:48461-agribase-enhanced-001":{
-
-    },
-    "lris:48423-lcdb-v41-land-cover-database-version-41-mainland-new-zealand":{
-
-    },
-    "lris:Ownshp":{
-      "foaf:name":"Ownshp"
-    },
-    "lris:48460-publicprivatenzland01b":{
-
+    "dataset1:edited_report":{
+      "prov:label":"Edited_report"
     }
   },
   "prefix":{
     "foaf":"http://xmlns.com/foaf/0.1/",
-    "inputs":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/inputs/",
-    "linz":"http://www.linz.govt.nz/",
-    "rules":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/rules/",
-    "results":"http://www.landcareresearch.co.nz/lucs/MOTU_LURNZ/results/",
-    "aq":"https://www.asurequality.com",
-    "lr":"http://www.landcareresearch.co.nz/",
-    "lris":"https:/lris.scinfo.org.nz/layer/"
+    "dataset1":"https://remote-testing.appspot.com/",
+    "xsd_1":"http://www.w3.org/2001/XMLSchema",
+    "ex":"http://www.example.org#",
+    "dcterms":"http://purl.org/dc/terms/",
+    "final_article":"https://remote-testing.appspot.comhttps://remote-testing.appspot.com/"
   },
   "activity":{
-    "rules:agribase_preclass_lut":{
-
+    "dataset1:editing":{
+      "prov:label":"Editing"
     },
-    "rules:motu_classification":{
-
-    },
-    "rules:lcdb_preclass_lut":{
-
+    "dataset1:analysis":{
+      "prov:label":"Analysis"
     }
   },
   "wasGeneratedBy":{
-    "_:id1":{
-      "prov:entity":"results:MOTU12",
-      "prov:time":"2018-03-01T10:36:51.934000+00:00",
-      "prov:activity":"rules:lcdb_preclass_lut"
+    "_:id11":{
+      "prov:entity":"dataset1:dataset1",
+      "prov:activity":"dataset1:analysis"
     },
-    "_:id3":{
-      "prov:entity":"results:Motu1",
-      "prov:time":"2018-03-01T10:36:51.934000+00:00",
-      "prov:activity":"rules:agribase_preclass_lut"
-    },
-    "_:id2":{
-      "prov:entity":"results:Final",
-      "prov:time":"2018-03-01T10:36:51.934000+00:00",
-      "prov:activity":"rules:motu_classification"
+    "_:id10":{
+      "prov:entity":"dataset1:report",
+      "prov:activity":"dataset1:analysis"
     }
   }
 }
