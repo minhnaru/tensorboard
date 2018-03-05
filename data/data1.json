@@ -2,7 +2,7 @@
     "wasDerivedFrom":{
       "_:id20":{
         "prov:usedEntity":"exn:article",
-        "prov:generatedEntity":"ex:quoteInBlogEntry-20130326",
+        "prov:generatedEntity":"exb:quoteInBlogEntry-20130326",
         "prov:type":{
           "type":"prov:QUALIFIED_NAME",
           "$":"prov:Quotation"
@@ -152,7 +152,7 @@
       "exc:composition1":{
   
       },
-      "ex:quoteInBlogEntry-20130326":{
+      "exb:quoteInBlogEntry-20130326":{
   
       }
     },
@@ -162,7 +162,6 @@
       "exb":"http://www.example4.org#",
       "exc":"http://www.example3.org#",
       "exn":"http://www.example1.org#",
-      "ex":"http://www.example5.org#",
       "dcterms":"http://purl.org/dc/terms/"
     },
     "alternateOf":{
