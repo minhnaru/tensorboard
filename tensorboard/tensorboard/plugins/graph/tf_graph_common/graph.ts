@@ -990,7 +990,7 @@ function addEdgeToGraph(
   });
 }
 
-// minh
+// minhs
 export interface relAttr {
   key: string,
   value: string
