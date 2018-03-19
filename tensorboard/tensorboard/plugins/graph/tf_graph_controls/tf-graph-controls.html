@@ -302,7 +302,7 @@ table.tf-graph-controls td.input-element-table-data {
     <a href="#" id="graphdownload" class="title" download="graph.png">
     </a>
   </div>
-  <div class="control-holder runs">
+  <!-- <div class="control-holder runs">
     <div class="title">Run <span class="counter">([[datasets.length]])</span></div>
     <paper-dropdown-menu no-label-float no-animations noink class="run-dropdown">
       <paper-menu id="select" class="dropdown-content" selected="{{selectedDataset}}" slot="dropdown-content">
@@ -334,7 +334,7 @@ table.tf-graph-controls td.input-element-table-data {
         <input type="file" id="file" name="file" on-change="_updateFileInput" />
       </div>
     </div>
-  </template>
+  </template> -->
   <div class="control-holder">
     <paper-toggle-button id="trace-inputs"></paper-toggle-button>
     <div class="title">Trace inputs</div>
@@ -352,7 +352,7 @@ table.tf-graph-controls td.input-element-table-data {
 
       <paper-radio-button name="device">Device</paper-radio-button>
 
-      <paper-radio-button id="xla-cluster-radio-button"
+      <!-- <paper-radio-button id="xla-cluster-radio-button"
                           name="xla_cluster"
                           disabled="[[!_xlaClustersProvided(renderHierarchy)]]">
         XLA Cluster
@@ -387,7 +387,7 @@ table.tf-graph-controls td.input-element-table-data {
       </paper-radio-button>
       <paper-tooltip animation-delay="0" for="tpu-compatibility-radio-button" position="right">
         Coloring by whether an operation is compatible for the TPU device.
-      </paper-tooltip>
+      </paper-tooltip> -->
 
     </paper-radio-group>
   </div>
@@ -546,17 +546,18 @@ table.tf-graph-controls td.input-element-table-data {
         <table>
           <tr>
             <td><div class="title">Graph</div></td>
-            <td>(* = expandable)</td>
+            <!-- <td>(* = expandable)</td> -->
           </tr>
           <tr>
             <td>
               <svg class="icon">
                 <rect transform="translate(3, 1)" height="14" width="35"
-                    rx="5" ry="5"/>
+                    style="fill:#fffc87"
+                    rx="10" ry="10"/>
               </svg>
             </td>
             <td>
-              Namespace<span class="gray">*</span>
+              Entity
               <div class="legend-clarifier">
                 <span>?</span>
                 <paper-tooltip animation-delay="0" position="right">
@@ -635,7 +636,7 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>
               <svg class="image-icon" viewBox="0 0 12 12" width="24" height="24">
                 <use x="0" y="0" class="image-icon" xlink:href="#summary-icon"/>
@@ -650,7 +651,7 @@ table.tf-graph-controls td.input-element-table-data {
                 </paper-tooltip>
               </div>
             </td>
-          </tr>
+          </tr> -->
           <tr>
             <td>
               <svg class="icon" height="15px"
@@ -667,11 +668,11 @@ table.tf-graph-controls td.input-element-table-data {
               </svg>
             </td>
             <td>
-              Dataflow edge
+              Relationship
               <div class="legend-clarifier">
                 <span>?</span>
                 <paper-tooltip animation-delay="0" position="right">
-                  Edge showing the data flow between operations. Edges flow upwards unless arrowheads specify otherwise.
+                  Edge showing the data relationship between operations.
                 </paper-tooltip>
               </div>
             </td>
@@ -694,7 +695,7 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>
               <svg class="icon" height="15px"
                   preserveAspectRatio="xMinYMid meet" viewBox="0 0 15 15">
@@ -718,7 +719,7 @@ table.tf-graph-controls td.input-element-table-data {
                 </paper-tooltip>
               </div>
             </td>
-          </tr>
+          </tr> -->
         </table>
       </div>
     </iron-collapse>
