@@ -653,7 +653,7 @@ export function getFillForNode(templateIndex, colorBy,
         // Op nodes are white.
         // return 'red';
 
-        // minhs
+        // minh
         // Opnodes color based on its operation
         if (renderInfo.node["op"] == 'entity') {
           return '#fffc87';

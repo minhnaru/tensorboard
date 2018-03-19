@@ -483,7 +483,7 @@ polygon.transition()
                   //                 (px+7) + ',' + (py-2));
 };
 
-/***
+/**
  * Helper for setting position of a svg rect
  * @param rect rect to set position of.
  * @param cx Center x.
