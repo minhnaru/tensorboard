@@ -121,11 +121,15 @@ svg.icon {
 .icon rect {
   height: 14px;
   width: 35px;
-  rx: 5px;
-  ry: 5px;
+  /* rx: 5px; */
+  /* ry: 5px; */
   stroke: #CCC;
   stroke-width: 2px;
-  fill: #D9D9D9;
+  /* fill: #D9D9D9; */
+}
+.icon polygon {
+  stroke: #CCC;
+  stroke-width: 2px;
 }
 .domainValues {
   margin-bottom: 10px;
@@ -197,6 +201,11 @@ svg.icon {
 
 #faded-rect {
   fill: url(#rectHatch);
+  stroke: var(--tb-graph-faded);
+}
+
+#faded-polygon {
+  fill: url(#polygonHatch);
   stroke: var(--tb-graph-faded);
 }
 
@@ -561,7 +570,46 @@ table.tf-graph-controls td.input-element-table-data {
               <div class="legend-clarifier">
                 <span>?</span>
                 <paper-tooltip animation-delay="0" position="right">
-                  Encapsulates a set of nodes. Namespace is hierarchical and based on scope.
+                  A physical, digital, conceptual, or other kind of thing with some fixed aspects; entities may be real or imaginary.
+                </paper-tooltip>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <svg class="icon">
+                <rect transform="translate(3, 1)" height="14" width="35"
+                    style="fill:#9fb1fc"
+                    rx="2" ry="2"/>
+              </svg>
+            </td>
+            <td>
+              Activity
+              <div class="legend-clarifier">
+                <span>?</span>
+                <paper-tooltip animation-delay="0" position="right">
+                  Is something that occurs over a period of time and acts upon or with entities; it may include consuming, processing, transforming, modifying, relocating, using, or generating entities.
+                </paper-tooltip>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <svg class="icon">
+                <!-- <rect transform="translate(3, 1)" height="14" width="35"
+                    style="fill:#fed37f"
+                    rx="10" ry="10"/> -->
+                <polygon transform="translate(3, 1)"
+                    style="fill:#fed37f"
+                    points="18,0 0,5 0,16 36,16 36,5" />
+              </svg>
+            </td>
+            <td>
+              Agent
+              <div class="legend-clarifier">
+                <span>?</span>
+                <paper-tooltip animation-delay="0" position="right">
+                  Is something that bears some form of responsibility for an activity taking place, for the existence of an entity, or for another agent's activity.
                 </paper-tooltip>
               </div>
             </td>
@@ -584,7 +632,7 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <tr>
+          <!-- <tr>
             <td>
               <svg class="icon" height="15px" preserveAspectRatio="xMinYMid meet"
                   viewBox="0 0 12 12">
@@ -601,8 +649,8 @@ table.tf-graph-controls td.input-element-table-data {
                 </paper-tooltip>
               </div>
             </td>
-          </tr>
-          <tr>
+          </tr> -->
+          <!-- <tr>
             <td>
               <svg class="icon" height="15px"
                   preserveAspectRatio="xMinYMid meet" viewBox="0 0 15 15">
@@ -620,18 +668,18 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <tr>
+          <tr> -->
             <td>
               <svg class="icon">
                 <circle fill="white" stroke="#848484" cx="10" cy="10" r="5"/>
               </svg>
             </td>
             <td>
-              Constant
+              Extra Nodes
               <div class="legend-clarifier">
                 <span>?</span>
                 <paper-tooltip animation-delay="0" position="right">
-                  Node that outputs a constant value.
+                  Nodes that envoles extra optional element.
                 </paper-tooltip>
               </div>
             </td>
@@ -668,7 +716,7 @@ table.tf-graph-controls td.input-element-table-data {
               </svg>
             </td>
             <td>
-              Relationship
+              Relations
               <div class="legend-clarifier">
                 <span>?</span>
                 <paper-tooltip animation-delay="0" position="right">

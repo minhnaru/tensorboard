@@ -45,6 +45,8 @@ limitations under the License.
   visibility: hidden;
 }
 
+/* minh */
+/* add polygon style */
 /* --- Node and annotation-node for Metanode --- */
 
 ::content .meta > .nodeshape > rect,
@@ -87,24 +89,66 @@ limitations under the License.
   stroke-width: 4;
 }
 
+::content .meta > .nodeshape > polygon,
+::content .meta > .annotation-node > polygon {
+  cursor: pointer;
+  fill: hsl(0, 0%, 70%);
+}
+
+::content .node.meta.highlighted > .nodeshape > polygon,
+::content .node.meta.highlighted > .annotation-node > polygon {
+  stroke-width: 2;
+}
+
+::content .annotation.meta.highlighted > .nodeshape > polygon,
+::content .annotation.meta.highlighted > .annotation-node > polygon {
+  stroke-width: 1;
+}
+
+::content .meta.selected > .nodeshape > polygon,
+::content .meta.selected > .annotation-node > polygon {
+  stroke: red;
+  stroke-width: 2;
+}
+
+::content .node.meta.selected.expanded > .nodeshape > polygon,
+::content .node.meta.selected.expanded > .annotation-node > polygon {
+  stroke: red;
+  stroke-width: 3;
+}
+
+::content .annotation.meta.selected > .nodeshape > polygon,
+::content .annotation.meta.selected > .annotation-node > polygon {
+  stroke: red;
+  stroke-width: 2;
+}
+
+::content .node.meta.selected.expanded.highlighted > .nodeshape > polygon,
+::content .node.meta.selected.expanded.highlighted > .annotation-node > polygon {
+  stroke: red;
+  stroke-width: 4;
+}
+
 ::content .faded,
 ::content .faded rect,
 ::content .faded ellipse,
+::content .faded polygon,
 ::content .faded path,
 ::content .faded use,
 ::content #rectHatch line,
+::content #polygonHatch line,
 ::content #ellipseHatch line {
   color: #e0d4b3 !important;
   fill: white;
   stroke: #e0d4b3 !important;
 }
 
-
 ::content .faded path {
   stroke-width: 1px !important;
 }
 
-::content .faded rect {
+::content .faded rect,
+::content .faded polygon {
   fill: url(#rectHatch) !important;
 }
 
@@ -120,6 +164,7 @@ limitations under the License.
 /* Rules used for input-tracing. */
 ::content .input-highlight > * > rect,
 ::content .input-highlight > * > ellipse,
+::content .input-highlight > * > polygon,
 ::content .input-highlight > * > use
 {
   fill: white;
@@ -129,17 +174,18 @@ limitations under the License.
 /*  - Faded non-input styling */
 ::content .non-input > * > rect,
 ::content .non-input > * > ellipse,
+::content .non-input > * > polygon,
 ::content .non-input > * > use,
 /* For Const nodes. */
 ::content .non-input > * > .constant:not([class*="input-highlight"]) >
   .annotation-node > ellipse,
 /* For styling of annotation nodes of non-input nodes. */
-::content .non-input > g > .annotation > .annotation-node > rect {
+::content .non-input > g > .annotation > .annotation-node > rect,
+::content .non-input > g > .annotation > .annotation-node > polygon {
   stroke: #e0d4b3 !important;
   stroke-width: inherit;
   stroke-dasharray: inherit;
 }
-
 
 ::content .non-input path {
   visibility: hidden;
@@ -148,7 +194,11 @@ limitations under the License.
 ::content .non-input > .nodeshape > rect,
 ::content .non-input > .annotation-node > rect,
 /* For styling of annotation nodes of non-input nodes. */
-::content .non-input > g > .annotation > .annotation-node > rect
+::content .non-input > g > .annotation > .annotation-node > rect,
+::content .non-input > .nodeshape > polygon,
+::content .non-input > .annotation-node > polygon,
+/* For styling of annotation nodes of non-input nodes. */
+::content .non-input > g > .annotation > .annotation-node > polygon
 {
   fill: url(#rectHatch) !important;
 }
