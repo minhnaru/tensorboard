@@ -27,7 +27,7 @@ limitations under the License.
 <link rel="import" href="tf-node-list-item.html">
 
 <dom-module id="tf-node-info">
-  <style>
+  <!-- <style>
   .sub-list-group {
     font-weight: 500;
     font-size: 12pt;
@@ -159,7 +159,7 @@ limitations under the License.
   .hidden {
     display: none;
   }
-  </style>
+  </style> -->
   <template>
     <paper-item>
       <paper-item-body two-line>
@@ -194,21 +194,8 @@ limitations under the License.
     </paper-item>
     <iron-collapse opened="{{_expanded}}">
     <template is="dom-if" if="{{_expanded}}" restamp="true">
-      <div class="expandedInfo">
-        <!-- <div class="sub-list-group attributes">
-          Attributes
-          (<span>[[_attributes.length]]</span>)
-          <iron-list class="sub-list" id ="attributesList"
-                    items="[[_attributes]]">
-            <template>
-              <div>
-                <div class="attr-left">[[item.key]]</div>
-                <div class="attr-right">[[item.value]]</div>
-              </div>
-            </template>
-          </iron-list>
-        </div> -->
-
+      <!-- <div class="expandedInfo">
+        
         <template is="dom-if" if="{{_device}}">
           <div class="sub-list-group device">
             <div class="attr-left">Device</div>
@@ -344,27 +331,12 @@ limitations under the License.
             </div>
           </div>
         </template>
-        <!-- <div class="toggle-include-group">
-          <paper-button raised class="toggle-include" on-click="_toggleInclude">
-            <span>[[_auxButtonText]]</span>
-          </paper-button>
-        </div>
-        <template is="dom-if" if="{{_isInSeries(_node)}}">
-          <div class="toggle-include-group">
-            <paper-button raised class="toggle-include" on-click="_toggleGroup">
-              <span>[[_groupButtonText]]</span>
-            </paper-button>
-          </div>
-        </template> -->
-      </div>
-      <div class="expandedInfo expandedEdge hidden">
-        <div>Minh</div>
-      </div>
+      </div> -->
     </template>
     </iron-collapse>
   </template>
 
-  <script>
+  <!-- <script>
     (function() {
       Polymer({
         is: 'tf-node-info',
@@ -660,5 +632,5 @@ limitations under the License.
         }
       });
     })();
-  </script>
+  </script> -->
 </dom-module>

@@ -113,6 +113,10 @@ export function buildGroup(sceneGroup,
         // Add line during enter because we're assuming that type of line
         // normally does not change.
         appendEdge(edgeGroup, d, sceneElement);
+
+        // run edgeInteraction when clicking on an edge.
+        // console.log(e,' tesing feature');
+        edgeInteraction(edgeGroup, edges, sceneElement);
       })
       .merge(edgeGroups)
       .each(position)
@@ -126,6 +130,29 @@ export function buildGroup(sceneGroup,
     })
     .remove();
   return edgeGroups;
+};
+
+// minh
+// Add Interaction for edges when selected.
+function edgeInteraction(selection, edges,
+  sceneElement, disableInteraction?: boolean) {
+  if (disableInteraction) {
+    selection.attr('pointer-events', 'none');
+    return;
+  }
+
+  console.log(selection,' selection');
+
+  selection
+      .on('click',
+          d => {
+            (<Event>d3.event).stopPropagation();
+            // sceneElement.fire('node-select', {name: edges[0].v});
+            // document.getElementsByClassName("expandedInfo")[0].classList.add("hidden");
+            // document.getElementsByClassName("expandedEdge")[0].classList.remove("hidden");            
+            console.log('Edge selected.');
+            console.log(edges,' ahoo');
+          });
 };
 
 /**
@@ -171,47 +198,6 @@ export function getLabelForBaseEdge(
       return endNode.attr[i].value;
     }
   }
-  
-  // if (endNode.attr.length > 0 && startNode.inputs.length > 0) {
-  //   for (let i = 0; i < endNode.attr.length; i++) {
-  //     if (startNode.inputs[i].name = endNode.attr[i].key) {
-  //       console.log(endNode.attr[i].value, ' endNode Value');
-  //       return endNode.attr[i].value;
-  //     } else {
-  //       return 'null-in';
-  //     }
-  //   }
-  // } else {
-  //   return 'null-out';
-  // }
-  
-
-  // return null;
-
-  // if (startNode.op == 'entity' && endNode.op == 'activity') {
-  //   // return 'wasGeneratedBy';
-  //   // return node2.device;
-  //   // return node.inputs[0].name;
-  //   if (node.inputs != undefined && node.inputs.length != 0) {
-  //     console.log('abc');
-  //     // return node.inputs[0].name;
-  //     return 'minh';
-  //   } else {
-  //     return 'bu';
-  //   }
-  // } else if (startNode.op == 'activity' && endNode.op == 'entity') {
-  //   return 'used';
-  // } else if (startNode.op == 'entity' && endNode.op == 'entity') {
-  //   if (baseEdge.w == 'Recipes/ingredients' && baseEdge.v == 'Recipes/cake') {
-  //     return 'minh';
-  //   } else {
-  //     return 'wasDerivedFrom';
-  //   } 
-  // }  else if (startNode.op == 'activity' && endNode.op == 'agent') {
-  //   return 'wasAssociatedWith';
-  // } else if (startNode.op == 'entity' && endNode.op == 'agent') {
-  //   return 'wasAttributedTo';
-  // }
 
   // original
   // if (node.outputShapes == null || _.isEmpty(node.outputShapes)) {

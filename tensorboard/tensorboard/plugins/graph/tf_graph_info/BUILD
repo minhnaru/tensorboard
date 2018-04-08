@@ -11,6 +11,7 @@ ts_web_library(
         "tf-graph-info.html",
         "tf-node-info.html",
         "tf-node-list-item.html",
+        "tf-edge-info.html",
     ],
     path = "/tf-graph-info",
     deps = [
