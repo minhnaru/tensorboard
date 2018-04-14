@@ -62,6 +62,7 @@ paper-button {
           render-hierarchy="[[renderHierarchy]]"
           highlighted-node="[[_getVisible(highlightedNode)]]"
           selected-node="{{selectedNode}}"
+          selected-edge="{{selectedEdge}}"
           color-by="[[colorBy]]"
           progress="[[progress]]"
           node-names-to-health-pills="[[nodeNamesToHealthPills]]"
@@ -93,6 +94,10 @@ Polymer({
     },
     title: String,
     selectedNode: {
+      type: String,
+      notify: true,
+    },
+    selectedEdge: {
       type: String,
       notify: true,
     },
@@ -204,6 +209,8 @@ Polymer({
     'node-unhighlight': '_nodeUnhighlighted',
     'node-toggle-extract': '_nodeToggleExtract',
     'node-toggle-seriesgroup': '_nodeToggleSeriesGroup',
+    // Edges
+    'edge-select': '_edgeSelected',
 
     // Annotations
 
@@ -227,6 +234,7 @@ Polymer({
     // indicate a user desire to click on a specific section of the graph.
     if (this._allowGraphSelect) {
       this.set('selectedNode', null);
+      this.set('selectedEdge', null);
     }
     // Reset this variable as a bug in d3 zoom behavior can cause zoomend
     // callback not to be called if a right-click happens during a zoom event.
@@ -241,6 +249,16 @@ Polymer({
   _nodeSelected: function(event) {
     if (this._allowGraphSelect) {
       this.set('selectedNode', event.detail.name);
+      this.set('selectedEdge', null);
+    }
+    // Reset this variable as a bug in d3 zoom behavior can cause zoomend
+    // callback not to be called if a right-click happens during a zoom event.
+    this._allowGraphSelect = true;
+  },
+  _edgeSelected: function(event) {
+    if (this._allowGraphSelect) {
+      this.set('selectedEdge', event.detail.e_name);
+      this.set('selectedNode', null);
     }
     // Reset this variable as a bug in d3 zoom behavior can cause zoomend
     // callback not to be called if a right-click happens during a zoom event.

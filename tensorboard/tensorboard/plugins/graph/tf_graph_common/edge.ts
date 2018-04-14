@@ -134,24 +134,26 @@ export function buildGroup(sceneGroup,
 
 // minh
 // Add Interaction for edges when selected.
-function edgeInteraction(selection, edges,
+// d = edges
+function edgeInteraction(selection, d,
   sceneElement, disableInteraction?: boolean) {
   if (disableInteraction) {
     selection.attr('pointer-events', 'none');
     return;
   }
 
-  console.log(selection,' selection');
-
   selection
       .on('click',
           d => {
             (<Event>d3.event).stopPropagation();
-            // sceneElement.fire('node-select', {name: edges[0].v});
+            // console.log(edges,' edges');
+            // console.log(d, 'd');
+            sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent});
             // document.getElementsByClassName("expandedInfo")[0].classList.add("hidden");
             // document.getElementsByClassName("expandedEdge")[0].classList.remove("hidden");            
             console.log('Edge selected.');
-            console.log(edges,' ahoo');
+            console.log(d.label.edgeGroup["_groups"][0][0].textContent,' - Selected Edge Name');
+            // console.log(edges,' ahoo');
           });
 };
 

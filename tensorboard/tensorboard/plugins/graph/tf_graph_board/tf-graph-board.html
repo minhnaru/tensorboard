@@ -139,6 +139,7 @@ paper-progress {
               devices-for-stats="[[devicesForStats]]"
               stats="[[stats]]"
               selected-node="{{selectedNode}}"
+              selected-edge="{{selectedEdge}}"
               highlighted-node="{{_highlightedNode}}"
               color-by="[[colorBy]]"
               color-by-params="{{colorByParams}}"
@@ -155,6 +156,7 @@ paper-progress {
               render-hierarchy="[[renderHierarchy]]"
               graph="[[graph]]"
               selected-node="{{selectedNode}}"
+              selected-edge="{{selectedEdge}}"
               selected-node-include="{{_selectedNodeInclude}}"
               highlighted-node="{{_highlightedNode}}"
               color-by="[[colorBy]]"
@@ -226,6 +228,10 @@ Polymer({
     healthPillStepIndex: Number,
     // Private API: Data routing between child components.
     selectedNode: {
+      type: String,
+      notify: true,
+    },
+    selectedEdge: {
       type: String,
       notify: true,
     },

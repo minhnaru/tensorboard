@@ -653,7 +653,7 @@ export function getFillForNode(templateIndex, colorBy,
             (<BridgeNode>renderInfo.node).inbound ? '#0ef' : '#fe0';
       } else {
         // Op nodes are white.
-        // return 'red';
+        // return 'red'
 
         // minh
         // Opnodes color based on its operation

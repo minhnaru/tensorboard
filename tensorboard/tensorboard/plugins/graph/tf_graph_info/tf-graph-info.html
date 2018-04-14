@@ -56,6 +56,17 @@ h2 {
     </tf-node-info>
   </paper-material>
 </template>
+<!-- Display for the selectedEdge -->
+<template is="dom-if" if="{{selectedEdge}}">
+  <paper-material elevation="1" class="card">
+    <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
+                  render-hierarchy="[[renderHierarchy]]"
+                  flat-graph="[[graph]]"
+                  edge-name="[[selectedEdge]]"
+                  color-by="[[colorBy]]">
+    </tf-edge-info>
+  </paper-material>
+</template>
 <template is="dom-if" if="[[_equals(colorBy, 'op_compatibility')]]">
   <tf-graph-op-compat-card graph-hierarchy="[[graphHierarchy]]"
                            hierarchy-params="[[hierarchyParams]]"
@@ -97,6 +108,10 @@ h2 {
       colorBy: String,
       // Two-ways
       selectedNode: {
+        type: String,
+        notify: true
+      },
+      selectedEdge: {
         type: String,
         notify: true
       },
