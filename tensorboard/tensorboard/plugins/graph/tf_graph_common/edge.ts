@@ -149,9 +149,9 @@ function edgeInteraction(selection, d,
             // console.log(edges,' edges');
             // console.log(d, 'd');
             console.log('Edge selected.');
-            console.log(d,' d');
-            console.log(d.label,' d.label');
-            console.log(d.label.metaedge,' d.label.metaedge');
+            // console.log(d,' d');
+            // console.log(d.label,' d.label');
+            // console.log(d.label.metaedge,' d.label.metaedge');
             // console.log(d.label.metaedge.w,' d.label.metaedge.w');
             // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
             sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent

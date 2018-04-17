@@ -1163,6 +1163,7 @@ function rawNodeGenerator() {
           secondTailInput(x);
         }
       }
+      objData.device = "Minh";
       rawNodesgene.push(objData);
       objData = {} as OpNode;
     }
@@ -1231,8 +1232,8 @@ function rawNodeGenerator() {
   }
   
   d3.queue()
-      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data1.json")
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
+      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data1.json")
+      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
       // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data3.json")
 
       // Some random data

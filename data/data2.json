@@ -24,6 +24,10 @@
             "prov:activity": "recipes:bake"
         },
         "_:id5": {
+            "prov:role":{
+                "type":"prov:QUALIFIED_NAME",
+                "$":"composedData"
+              },
             "prov:entity": "recipes:ingredients",
             "prov:activity": "recipes:bake"
         }
@@ -64,6 +68,7 @@
     "wasGeneratedBy": {
         "_:id7": {
             "prov:entity": "products:cake",
+            "prov:time":"2012-04-01T15:21:00+01:00",
             "prov:activity": "recipes:bake"
         }
     }
