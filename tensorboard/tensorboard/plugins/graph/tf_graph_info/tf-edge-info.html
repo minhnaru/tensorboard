@@ -1,18 +1,6 @@
 <!--
-@license
-Copyright 2016 The TensorFlow Authors. All Rights Reserved.
-
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-    http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+Minh
+For Edge Interaction
 -->
 
 <link rel="import" href="../iron-collapse/iron-collapse.html">
@@ -40,38 +28,9 @@ limitations under the License.
       overflow-y: scroll;
     }
 
-    .attr-left {
-      float: left;
-      width: 30%;
-      word-wrap: break-word;
+    .sub-list-second {
       color: #565656;
-      font-size: 11pt;
-      font-weight: 400;
-    }
-
-    .attr-right {
-      margin-left: 30%;
-      word-wrap: break-word;
-      color: #565656;
-      font-weight: 400;
-    }
-
-    .sub-list-table {
-      display: table;
-      width: 100%;
-    }
-
-    .sub-list-table-row {
-      display: table-row;
-    }
-
-    .sub-list-table-row .sub-list-table-cell:last-child {
-      text-align: right;
-    }
-
-    .sub-list-table-cell {
-      color: #565656;
-      display: table-cell;
+      display: inline;
       font-size: 11pt;
       font-weight: 400;
       max-width: 200px;
@@ -92,10 +51,6 @@ limitations under the License.
       padding: 8px 12px;
     }
 
-    .controlDeps {
-      padding: 0 0 0 8px;
-    }
-
     .edge-name {
       white-space: normal;
       word-wrap: break-word;
@@ -110,11 +65,6 @@ limitations under the License.
     .subtitle {
       font-size: 12pt;
       color: #5e5e5e;
-    }
-
-    .controlLine {
-      font-size: 11pt;
-      font-weight: 400;
     }
 
     .toggle-button {
@@ -192,41 +142,11 @@ limitations under the License.
     <iron-collapse opened="{{_expanded}}">
       <template is="dom-if" if="{{_expanded}}" restamp="true">
         <div class="expandedInfo">
-          <div class="sub-list-group predecessors">
-            Head
-            <iron-list class="sub-list" id="headList" items="[[_predecessors.regular]]">
-              <template>
-                <!-- <tf-node-list-item
-                  class="non-control-list-item"
-                  card-node="[[_edge]]"
-                  item-node="[[item.node]]"
-                  edge-label="[[item.edgeLabel]]"
-                  item-render-info="[[item.renderInfo]]"
-                  name="[[item.name]]"
-                  item-type="predecessors"
-                  color-by="[[colorBy]]"
-                  template-index="[[_templateIndex]]">
-              </tf-node-list-item> -->
-              </template>
-            </iron-list>
+          <div class="sub-list-group">
+            Head: <span class="sub-list sub-list-second">[[_head]]</span>
           </div>
           <div class="sub-list-group">
-            Tail
-            <iron-list class="sub-list" id="tailList" items="[[_predecessors.regular]]">
-              <template>
-                <!-- <tf-node-list-item
-                    class="non-control-list-item"
-                    card-node="[[_edge]]"
-                    item-node="[[item.node]]"
-                    edge-label="[[item.edgeLabel]]"
-                    item-render-info="[[item.renderInfo]]"
-                    name="[[item.name]]"
-                    item-type="predecessors"
-                    color-by="[[colorBy]]"
-                    template-index="[[_templateIndex]]">
-                </tf-node-list-item> -->
-              </template>
-            </iron-list>
+            Tail: <span class="sub-list sub-list-second">[[_tail]]</span>
           </div>
         </div>
       </template>
@@ -244,46 +164,44 @@ limitations under the License.
           renderHierarchy: Object,
           /** What to color the nodes by (compute time, memory, device etc.) */
           colorBy: String,
-          // _templateIndex: {
-          //   type: Function,
-          //   computed: '_getTemplateIndex(graphHierarchy)'
-          // },
           _edge: {
             type: Object,
-            computed: '_getEdge(edgeName, graphHierarchy)',
+            computed: '_getEdge(edgeName)',
             observer: '_resetState'
+          },
+          _head: {
+            type: Object,
+            computed: '_getHead(edgeName)'
+          },
+          _tail: {
+            type: Object,
+            computed: '_getTail(edgeName)'
           },
           _expanded: {
             type: Boolean,
             value: true
           },
-          // _head: {
-          //   type: Object,
-          //   computed: '_getHeads(_edge, graphHierarchy)'
-          // },
-          // _tail: {
-          //   type: Object,
-          //   computed: '_getTails(_edge, graphHierarchy)'
-          // },
           _auxButtonText: String,
           _groupButtonText: String
         },
-        listeners: {
-          'edge-info-select': '_edgeInfoSelected'
+        _getSplit: function (edgeName) {
+          let splitName = edgeName.split('--');
+          return splitName;
         },
-        // expandNode: function() {
-        //   this.fire('_edge.expand', this.node);
-        // },
-        // _getTemplateIndex: function(graphHierarchy) {
-        //   return graphHierarchy.getTemplateIndex();
-        // },
-        // _edgeInfoSelected: function (event) {
-        //   console.log(event);
-        // },
-        _getEdge: function (edgeName, graphHierarchy) {
-          // return graphHierarchy.node(edgeName);
-          console.log(edgeName,' edgeName');
-          return edgeName;
+        _getEdge: function (edgeName) {
+          if (edgeName != null) {
+            return this._getSplit(edgeName)[0];
+          }
+        },
+        _getHead: function (edgeName) {
+          if (edgeName != null) {
+            return this._getSplit(edgeName)[1];
+          }
+        },
+        _getTail: function (edgeName) {
+          if (edgeName != null) {
+            return this._getSplit(edgeName)[2];
+          }
         },
         _toggleExpanded: function () {
           this._expanded = !this._expanded;
@@ -303,79 +221,11 @@ limitations under the License.
           return (edgeName || '').replace(/\//g, '<wbr>/');
         },
         _resetState: function () {
-          // this.set("_groupButtonText",
-          //   tf.graph.scene.node.getGroupSettingLabel(this._edge));
-
           if (this._edge) {
             Polymer.dom(this.$.edgetitle).innerHTML =
               this._getPrintableHTMLEdgeName(this._edge);
           }
-        },
-        // _getHeads: function(edge, hierarchy) {
-        //   this.async(this._resizeList.bind(this, "#inputsList"));
-        //   if (!edge) {
-        //     return {regular: [], control: []}
-        //   }
-        //   return this._convertEdgeListToEdgeInfoList(
-        //     hierarchy.getSuccessors(node.name), false, node.isGroupNode);
-        // },
-        // _getTails: function(edge, hierarchy) {
-        //   this.async(this._resizeList.bind(this, "#outputsList"));
-        //   if (!edge) {
-        //     return {regular: [], control: []}
-        //   }
-        //   return this._convertEdgeListToEdgeInfoList(
-        //     hierarchy.getPredecessors(node.name), true, node.isGroupNode);
-        // },
-        // _convertEdgeListToEdgeInfoList: function(list, isPredecessor, isGroupNode) {
-
-        //   /**
-        //    * Unpacks the metaedge into a list of base edge information
-        //    * that can be rendered.
-        //    */
-        //   var unpackMetaedge = function(metaedge) {
-        //     return _.map(metaedge.baseEdgeList, function(baseEdge) {
-        //       var name = isPredecessor ? baseEdge.v : baseEdge.w;
-        //       return {
-        //         name: name,
-        //         node: this._getNode(name, this.graphHierarchy),
-        //         edgeLabel: tf.graph.scene.edge.getLabelForBaseEdge(baseEdge,
-        //             this.renderHierarchy),
-        //         renderInfo: this._getRenderInfo(name, this.renderHierarchy)
-        //       };
-        //     }, this);
-        //   }.bind(this);
-
-        //   /**
-        //    * Converts a list of metaedges to a list of edge information
-        //    * that can be rendered.
-        //    */
-        //   var toEdgeInfoList = function(edges) {
-        //     var edgeInfoList = [];
-        //     _.each(edges, function(metaedge) {
-        //       var name = isPredecessor ? metaedge.v : metaedge.w;
-        //       // Enumerate all the base edges if the node is an OpNode, or the
-        //       // metaedge has only 1 edge in it.
-        //       if (!isGroupNode || metaedge.baseEdgeList.length == 1) {
-        //         edgeInfoList = edgeInfoList.concat(unpackMetaedge(metaedge));
-        //       } else {
-        //         edgeInfoList.push({
-        //           name: name,
-        //           node: this._getNode(name, this.graphHierarchy),
-        //           edgeLabel: tf.graph.scene.edge.getLabelForEdge(metaedge,
-        //               this.renderHierarchy),
-        //           renderInfo: this._getRenderInfo(name, this.renderHierarchy)
-        //         });
-        //       }
-        //     }, this);
-        //     return edgeInfoList;
-        //   }.bind(this);
-
-        //   return {
-        //     regular: toEdgeInfoList(list.regular),
-        //     control: toEdgeInfoList(list.control)
-        //   };
-        // }
+        }
       });
     })();
   </script>

@@ -63,6 +63,7 @@ paper-button {
           highlighted-node="[[_getVisible(highlightedNode)]]"
           selected-node="{{selectedNode}}"
           selected-edge="{{selectedEdge}}"
+          selected-head="{{selectedHead}}"
           color-by="[[colorBy]]"
           progress="[[progress]]"
           node-names-to-health-pills="[[nodeNamesToHealthPills]]"
@@ -98,6 +99,10 @@ Polymer({
       notify: true,
     },
     selectedEdge: {
+      type: String,
+      notify: true,
+    },
+    selectedHead: {
       type: String,
       notify: true,
     },
@@ -264,6 +269,17 @@ Polymer({
     // callback not to be called if a right-click happens during a zoom event.
     this._allowGraphSelect = true;
   },
+  // _headSelected: function(event) {
+  //   if (this._allowGraphSelect) {
+  //     this.set('selectedEdge', event.detail.e_name);
+  //     this.set('selectedHead', event.detail.h_name);
+  //     // this.set('selectedTailEdge', event.detail.e_t_name);
+  //     this.set('selectedNode', null);
+  //   }
+  //   // Reset this variable as a bug in d3 zoom behavior can cause zoomend
+  //   // callback not to be called if a right-click happens during a zoom event.
+  //   this._allowGraphSelect = true;
+  // },
   _nodeHighlighted: function(event) {
     this.set('highlightedNode', event.detail.name);
   },

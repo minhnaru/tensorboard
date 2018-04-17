@@ -1014,8 +1014,6 @@ function rawNodeGenerator() {
     // omit all unnecessary keys to return all relations
     let pickData = _.omit(Data, ["entity", "activity", "agent", "prefix"]);
 
-    console.log(pickData,' pickData');
-
     let procElemT = [];
     // refined data into [{head:.., tail:.., relation:..}, {}, ..]
     Object.keys(pickData).forEach(function(key) {

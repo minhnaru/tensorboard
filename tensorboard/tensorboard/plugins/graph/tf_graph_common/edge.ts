@@ -148,11 +148,20 @@ function edgeInteraction(selection, d,
             (<Event>d3.event).stopPropagation();
             // console.log(edges,' edges');
             // console.log(d, 'd');
-            sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent});
+            console.log('Edge selected.');
+            console.log(d,' d');
+            console.log(d.label,' d.label');
+            console.log(d.label.metaedge,' d.label.metaedge');
+            // console.log(d.label.metaedge.w,' d.label.metaedge.w');
+            // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
+            sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent
+                                                      +EDGE_KEY_SEP
+                                                      +d.label.metaedge.baseEdgeList[0].v
+                                                      +EDGE_KEY_SEP
+                                                      +d.label.metaedge.baseEdgeList[0].w});
             // document.getElementsByClassName("expandedInfo")[0].classList.add("hidden");
             // document.getElementsByClassName("expandedEdge")[0].classList.remove("hidden");            
-            console.log('Edge selected.');
-            console.log(d.label.edgeGroup["_groups"][0][0].textContent,' - Selected Edge Name');
+            // console.log(d.label.edgeGroup["_groups"][0][0].textContent,' - Selected Edge Name');
             // console.log(edges,' ahoo');
           });
 };

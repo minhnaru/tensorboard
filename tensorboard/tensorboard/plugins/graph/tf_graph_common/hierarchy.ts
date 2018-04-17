@@ -38,8 +38,12 @@ export interface Hierarchy {
   /** The maximum size across all meta edges. Used for scaling thickness. */
   maxMetaEdgeSize: number;
   getNodeMap(): {[nodeName: string]: GroupNode|OpNode};
+  // getEdgeMap(): {[edgeName: string]: GroupNode|OpNode};
   node(name: string): GroupNode|OpNode;
+  edge(name: string): GroupNode|OpNode;
   setNode(name: string, node: GroupNode|OpNode): void;
+  // setEdge(name: string, node: GroupNode|OpNode): void;
+  // setEdge(fromName: string, toName: string): void;
   getBridgegraph(nodeName: string): graphlib.Graph<GroupNode|OpNode, Metaedge>;
   getPredecessors(nodeName: string): Edges;
   getSuccessors(nodeName: string): Edges;
@@ -55,6 +59,7 @@ class HierarchyImpl implements Hierarchy {
   libraryFunctions: {[key: string]: Metanode};
   templates: {[templateId: string]: string[]};
   private index: {[nodeName: string]: GroupNode|OpNode};
+  private e_index: {[edgeName: string]: GroupNode|OpNode};
   devices: string[];
   xlaClusters: string[];
   hasShapeInfo = false;
@@ -72,6 +77,11 @@ class HierarchyImpl implements Hierarchy {
      */
     this.index = {};
     this.index[ROOT_NAME] = this.root;
+
+    // embedded root object to graph hierachy
+    this.e_index = {};
+    this.e_index[ROOT_NAME] = this.root;
+
     this.orderings = {};
   }
 
@@ -86,6 +96,22 @@ class HierarchyImpl implements Hierarchy {
   setNode(name: string, node: GroupNode|OpNode): void {
     this.index[name] = node;
   }
+
+  // for edge
+  // getEdgeMap(): {[edgeName: string]: GroupNode|OpNode} {
+  //   return this.e_index;
+  // }
+
+  // eg: this.e_index["exb"];
+  edge(name: string): GroupNode|OpNode {
+    return this.e_index[name];
+  }
+
+  // setEdge(name: string, node: GroupNode|OpNode): void {
+  //   // console.log(this.e_index[name],' this.index[name]');
+  //   // console.log(name,' edgename');
+  //   // this.e_index[name] = node;
+  // }
 
   /**
    * Given the name of a node in this hierarchy, get its bridgegraph, creating
