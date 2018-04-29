@@ -81,13 +81,15 @@ export function getEdgeKey(edgeObj: EdgeData) {
 export function buildGroup(sceneGroup,
     graph: graphlib.Graph<render.RenderNodeInfo, render.RenderMetaedgeInfo>,
     sceneElement) {
+  // let agge: tf.graph.OpNodeImpl;
+  // console.log(agge,' agge');
   let edges: EdgeData[] = [];
   edges = _.reduce(graph.edges(), (edges, edgeObj) => {
     let edgeLabel = graph.edge(edgeObj);
     edges.push({
       v: edgeObj.v,
       w: edgeObj.w,
-      label: edgeLabel
+      label: edgeLabel,
     });
     return edges;
   }, edges);
@@ -116,7 +118,7 @@ export function buildGroup(sceneGroup,
 
         // run edgeInteraction when clicking on an edge.
         // console.log(e,' tesing feature');
-        edgeInteraction(edgeGroup, edges, sceneElement);
+        edgeInteraction(edgeGroup, d, sceneElement);
       })
       .merge(edgeGroups)
       .each(position)
@@ -133,6 +135,36 @@ export function buildGroup(sceneGroup,
 };
 
 // minh
+
+export function getLabelForInfo(
+  baseEdge, renderInfo): string {
+  // let node = <OpNode>renderInfo.getNodeByName(baseEdge.v); // original
+  // console.log(renderInfo,' renderInfo');
+  // console.log(baseEdge,' baseEdge');
+  // let startNode = <OpNode>renderInfo.getNodeByName(baseEdge.v); // start Node
+  // let endNode = <OpNode>renderInfo.getNodeByName(baseEdge.w); // end Node
+  /* startNode & endNode
+  |  +-------+        +-----+
+  |  | start +------->+ end |
+  |  +-------+        +-----+
+  */
+
+  // Combine to match with the key in Node
+  // let comb = baseEdge.v + EDGE_KEY_SEP + baseEdge.w;
+
+  // if (endNode.attr.length === 0) {
+  //   // return 'no label';
+  //   return ' ';
+  // }
+  // for (let i = 0; i < endNode.attr.length; i++) {
+  //   if (comb == endNode.attr[i].key) {
+  //     // compare and return the edge label between two nodes.
+  //     return endNode.attr[i].value;
+  //   }
+  // }
+  return null;
+}
+
 // Add Interaction for edges when selected.
 // d = edges
 function edgeInteraction(selection, d,
@@ -151,14 +183,24 @@ function edgeInteraction(selection, d,
             console.log('Edge selected.');
             // console.log(d,' d');
             // console.log(d.label,' d.label');
+
             // console.log(d.label.metaedge,' d.label.metaedge');
+            // console.log(d.label.metaedge.baseEdgeList[0].v,' v');
+            // console.log(d.label.metaedge.baseEdgeList[0].w,' w');
+            console.log(d.label.metaedge.baseEdgeList[0].outputTensorKey,' key');
+
+            // let startNode = <OpNode>render.RenderGraphInfo.getNodeByName(baseEdge.v);
+            // let labelForInfo = getLabelForInfo(d.label.metaedge.baseEdgeList[0], d);
+
             // console.log(d.label.metaedge.w,' d.label.metaedge.w');
             // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
             sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent
                                                       +EDGE_KEY_SEP
                                                       +d.label.metaedge.baseEdgeList[0].v
                                                       +EDGE_KEY_SEP
-                                                      +d.label.metaedge.baseEdgeList[0].w});
+                                                      +d.label.metaedge.baseEdgeList[0].w
+                                                      +EDGE_KEY_SEP
+                                                      +d.label.metaedge.baseEdgeList[0].outputTensorKey});
             // document.getElementsByClassName("expandedInfo")[0].classList.add("hidden");
             // document.getElementsByClassName("expandedEdge")[0].classList.remove("hidden");            
             // console.log(d.label.edgeGroup["_groups"][0][0].textContent,' - Selected Edge Name');
@@ -181,31 +223,16 @@ export function getLabelForBaseEdge(
   |  +-------+        +-----+
   */
 
-  // console.log('-------------------------AAAAA--------------------------');
-  // console.log(baseEdge.v, ' baseedge V start');
-  // console.log(baseEdge.w, ' baseedge W end');
-  // console.log(startNode, ' startNode');
-  // console.log(endNode, ' endNode');
-
   // Combine to match with the key in Node
   let comb = baseEdge.v + EDGE_KEY_SEP + baseEdge.w;
 
-  // if (endNode.attr.length > 0 && startNode.inputs.length > 0) {
-  //   let vaf = _.find(endNode.attr, function(o) {
-  //     return o.key = comb;
-  //   });
-  //   console.log(vaf, ' find');
-  // }
-
-  // if (endNode.attr.length === 0 && startNode.inputs.length === 0) {
-  //   return 'no label';
-  // }
   if (endNode.attr.length === 0) {
     // return 'no label';
     return ' ';
   }
   for (let i = 0; i < endNode.attr.length; i++) {
     if (comb == endNode.attr[i].key) {
+      // compare and return the edge label between two nodes.
       return endNode.attr[i].value;
     }
   }

@@ -119,23 +119,7 @@ For Edge Interaction
           <div class="edge-name" id="edgetitle"></div>
         </div>
         <div secondary>
-          <!-- <tf-graph-icon class="edge-icon" edge="[[_edge]]"
-              render-info="[[_getRenderInfo(edgeName, renderHierarchy)]]"
-              color-by="[[colorBy]]"
-              template-index="[[_templateIndex]]"
-              ></tf-graph-icon> -->
-          <!-- <template is="dom-if" if="{{_edge.op}}">
-            <div class="subtitle">
-              Operation:
-              <span>[[_edge.op]]</span>
-            </div>
-          </template> -->
-          <!-- <template is="dom-if" if="{{_edge.metagraph}}">
-            <div class="subtitle">
-              Subgraph:
-              <span>[[_edge.cardinality]]</span> nodes
-            </div>
-          </template> -->
+            [[_hinfo]] [[_info]]
         </div>
       </paper-item-body>
     </paper-item>
@@ -177,6 +161,14 @@ For Edge Interaction
             type: Object,
             computed: '_getTail(edgeName)'
           },
+          _info: {
+            type: Object,
+            computed: '_getInfo(edgeName)'
+          },
+          _hinfo: {
+            type: Object,
+            computed: '_getHInfo(edgeName)'
+          },
           _expanded: {
             type: Boolean,
             value: true
@@ -201,6 +193,24 @@ For Edge Interaction
         _getTail: function (edgeName) {
           if (edgeName != null) {
             return this._getSplit(edgeName)[2];
+          }
+        },
+        _getInfo: function (edgeName) {
+          if (edgeName != null) {
+            if (this._getSplit(edgeName)[1] == this._getSplit(edgeName)[5]) {
+              return this._getSplit(edgeName)[4];
+            } else {
+              return null;
+            }
+          }
+        },
+        _getHInfo: function (edgeName) {
+          if (edgeName != null) {
+            if (this._getSplit(edgeName)[1] == this._getSplit(edgeName)[5]) {
+              return "(" + this._getSplit(edgeName)[3] + ")" + " - ";
+            } else {
+              return null;
+            }
           }
         },
         _toggleExpanded: function () {
