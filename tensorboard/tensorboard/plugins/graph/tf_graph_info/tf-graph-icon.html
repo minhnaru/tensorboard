@@ -51,7 +51,7 @@ limitations under the License.
           <use x="0" y="0" xlink:href="#summary-icon" />
         </svg>
       </template>
-      <template is="dom-if" if="[[_isRegularOp(node, const, summary)]]">
+      <!-- <template is="dom-if" if="[[_isRegularOp(node, const, summary)]]">
         <svg height$="[[height]]"
             preserveAspectRatio="xMinYMid meet" viewBox="0 0 16 8">
           <use xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -59,7 +59,41 @@ limitations under the License.
               fill$="[[_getFill(_computedFill, 'OP')]]"
               stroke$="[[_getStroke(_computedFill, 'OP')]]"
               class$="{{_fadedClass(renderInfo, 'ellipse')}}"
-              x="8" y="4" />
+              x="8" y="4" /> -->
+              <!-- x="8" y="4" /> for polygon, ellipse -->
+        <!-- </svg>
+      </template> -->
+      <template is="dom-if" if="[[_isRegularOp(node, const, summary, 'entity')]]">
+        <svg height$="[[height]]"
+            preserveAspectRatio="xMinYMid meet" viewBox="0 0 16 8">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#op-node-stamp-rect-entity"
+              fill$="[[_getFill(_computedFill, 'OP')]]"
+              stroke$="[[_getStroke(_computedFill, 'OP')]]"
+              class$="{{_fadedClass(renderInfo, 'ellipse')}}"
+              x="1" y="1" />
+        </svg>
+      </template>
+      <template is="dom-if" if="[[_isRegularOp(node, const, summary, 'activity')]]">
+        <svg height$="[[height]]"
+            preserveAspectRatio="xMinYMid meet" viewBox="0 0 16 8">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#op-node-stamp-rect-activity"
+              fill$="[[_getFill(_computedFill, 'OP')]]"
+              stroke$="[[_getStroke(_computedFill, 'OP')]]"
+              class$="{{_fadedClass(renderInfo, 'polygon')}}"
+              x="1" y="1" />
+        </svg>
+      </template>
+      <template is="dom-if" if="[[_isRegularOp(node, const, summary, 'agent')]]">
+        <svg height$="[[height]]"
+            preserveAspectRatio="xMinYMid meet" viewBox="0 0 16 8">
+          <use xmlns:xlink="http://www.w3.org/1999/xlink"
+              xlink:href="#op-node-stamp-polygon-agent"
+              fill$="[[_getFill(_computedFill, 'OP')]]"
+              stroke$="[[_getStroke(_computedFill, 'OP')]]"
+              class$="{{_fadedClass(renderInfo, 'polygon')}}"
+              x="0" y="0" />
         </svg>
       </template>
     </template>
@@ -286,9 +320,14 @@ limitations under the License.
         /**
          * Test whether the op node is a regular non-summary non-const node.
          */
-        _isRegularOp: function(inputNode, inputConst, inputSummary) {
+        // _isRegularOp: function(inputNode, inputConst, inputSummary) {
+        //   return !this._isConst(inputNode, inputConst) &&
+        //       !this._isSummary(inputNode, inputSummary);
+        // },
+        _isRegularOp: function(inputNode, inputConst, inputSummary, typeOp) {
           return !this._isConst(inputNode, inputConst) &&
-              !this._isSummary(inputNode, inputSummary);
+            !this._isSummary(inputNode, inputSummary) &&
+            inputNode.op === typeOp;
         },
 
         _fadedClass: function(itemRenderInfo, shape) {
