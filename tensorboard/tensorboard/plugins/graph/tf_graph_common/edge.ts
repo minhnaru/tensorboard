@@ -103,26 +103,26 @@ export function buildGroup(sceneGroup,
 
   // Make edges a group to support rendering multiple lines for metaedge
   edgeGroups.enter()
-      .append('g')
-      .attr('class', Class.Edge.GROUP)
-      .attr('data-edge', getEdgeKey)
-      .each(function(d: EdgeData) {
-        let edgeGroup = d3.select(this);
-        d.label.edgeGroup = edgeGroup;
-        // index node group for quick highlighting
-        sceneElement._edgeGroupIndex[getEdgeKey(d)] = edgeGroup;
+    .append('g')
+    .attr('class', Class.Edge.GROUP)
+    .attr('data-edge', getEdgeKey)
+    .each(function(d: EdgeData) {
+      let edgeGroup = d3.select(this);
+      d.label.edgeGroup = edgeGroup;
+      // index node group for quick highlighting
+      sceneElement._edgeGroupIndex[getEdgeKey(d)] = edgeGroup;
 
-        // Add line during enter because we're assuming that type of line
-        // normally does not change.
-        appendEdge(edgeGroup, d, sceneElement);
+      // Add line during enter because we're assuming that type of line
+      // normally does not change.
+      appendEdge(edgeGroup, d, sceneElement);
 
-        // run edgeInteraction when clicking on an edge.
-        // console.log(e,' tesing feature');
-        edgeInteraction(edgeGroup, d, sceneElement);
-      })
-      .merge(edgeGroups)
-      .each(position)
-      .each(function(d) {
+      // run edgeInteraction when clicking on an edge.
+      // console.log(e,' tesing feature');
+      edgeInteraction(edgeGroup, d, sceneElement);
+    })
+    .merge(edgeGroups)
+    .each(position)
+    .each(function(d) {
     stylize(d3.select(this), d, sceneElement);
   });
 
@@ -187,10 +187,7 @@ function edgeInteraction(selection, d,
             // console.log(d.label.metaedge,' d.label.metaedge');
             // console.log(d.label.metaedge.baseEdgeList[0].v,' v');
             // console.log(d.label.metaedge.baseEdgeList[0].w,' w');
-            console.log(d.label.metaedge.baseEdgeList[0].outputTensorKey,' key');
-
-            // let startNode = <OpNode>render.RenderGraphInfo.getNodeByName(baseEdge.v);
-            // let labelForInfo = getLabelForInfo(d.label.metaedge.baseEdgeList[0], d);
+            // console.log(d.label.metaedge.baseEdgeList[0].outputTensorKey,' key');
 
             // console.log(d.label.metaedge.w,' d.label.metaedge.w');
             // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
@@ -201,10 +198,6 @@ function edgeInteraction(selection, d,
                                                       +d.label.metaedge.baseEdgeList[0].w
                                                       +EDGE_KEY_SEP
                                                       +d.label.metaedge.baseEdgeList[0].outputTensorKey});
-            // document.getElementsByClassName("expandedInfo")[0].classList.add("hidden");
-            // document.getElementsByClassName("expandedEdge")[0].classList.remove("hidden");            
-            // console.log(d.label.edgeGroup["_groups"][0][0].textContent,' - Selected Edge Name');
-            // console.log(edges,' ahoo');
           });
 };
 
@@ -497,6 +490,9 @@ function stylize(edgeGroup, d: EdgeData, stylize) {
   let metaedge = d.label.metaedge;
   edgeGroup.select('path.' + Class.Edge.LINE)
       .classed('control-dep', metaedge && !metaedge.numRegularEdges);
+
+  // let isSelected = stylize.isEdgeSelected(d.label.edgeGroup["_groups"][0][0].textContent);
+  // console.log(isSelected,' isSelected edge');
 };
 
 } // close module

@@ -1014,6 +1014,10 @@ Polymer({
   isNodeHighlighted: function(n) {
     return n === this.highlightedNode;
   },
+  // minh
+  isEdgeSelected: function(n) {
+    return n === this.selectedEdge;
+  },
   addAnnotationGroup: function(a, d, selection) {
     var an = a.node.name;
     this._annotationGroupIndex[an] = this._annotationGroupIndex[an] || {};

@@ -250,8 +250,6 @@ function addInteraction(selection, d: render.RenderNodeInfo,
             // a graph-select.
             (<Event>d3.event).stopPropagation();
             sceneElement.fire('node-select', {name: d.node.name});
-            // document.getElementsByClassName("expandedEdge")[0].classList.add("hidden"); 
-            // document.getElementsByClassName("expandedInfo")[0].classList.remove("hidden");
           })
       .on('contextmenu', (d, i) => {
         sceneElement.fire('node-select', {name: d.node.name});
@@ -765,6 +763,7 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
   nodeClass = nodeClass || Class.Node.SHAPE;
   let isHighlighted = sceneElement.isNodeHighlighted(renderInfo.node.name);
   let isSelected = sceneElement.isNodeSelected(renderInfo.node.name);
+  console.log(isSelected,' isSelected');
   let isExtract = renderInfo.isInExtract || renderInfo.isOutExtract;
   let isExpanded = renderInfo.expanded && nodeClass !== Class.Annotation.NODE;
   let isFadedOut = renderInfo.isFadedOut;

@@ -30,10 +30,10 @@ For Edge Interaction
 
     .sub-list-second {
       color: #565656;
-      display: inline;
+      display: block;
       font-size: 11pt;
       font-weight: 400;
-      max-width: 200px;
+      max-width: 300px;
       padding: 0 4px;
     }
 
@@ -119,18 +119,25 @@ For Edge Interaction
           <div class="edge-name" id="edgetitle"></div>
         </div>
         <div secondary>
-            [[_hinfo]] [[_info]]
+            <!-- [[_hinfo]] [[_info]] -->
         </div>
       </paper-item-body>
     </paper-item>
     <iron-collapse opened="{{_expanded}}">
       <template is="dom-if" if="{{_expanded}}" restamp="true">
         <div class="expandedInfo">
+          <template is="dom-if" if="{{_info}}">
+            <div class="sub-list-group">
+              Elements
+              <span class="sub-list sub-list-second">Attribute: [[_hinfo]]</span>
+              <span class="sub-list sub-list-second">Value:     [[_info]]</span>
+            </div>
+          </template>
           <div class="sub-list-group">
-            Head: <span class="sub-list sub-list-second">[[_head]]</span>
+            Head <span class="sub-list sub-list-second">[[_head]]</span>
           </div>
           <div class="sub-list-group">
-            Tail: <span class="sub-list sub-list-second">[[_tail]]</span>
+            Tail <span class="sub-list sub-list-second">[[_tail]]</span>
           </div>
         </div>
       </template>
@@ -207,7 +214,7 @@ For Edge Interaction
         _getHInfo: function (edgeName) {
           if (edgeName != null) {
             if (this._getSplit(edgeName)[1] == this._getSplit(edgeName)[5]) {
-              return "(" + this._getSplit(edgeName)[3] + ")" + " - ";
+              return "(" + this._getSplit(edgeName)[3] + ")";
             } else {
               return null;
             }
