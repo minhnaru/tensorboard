@@ -50,10 +50,6 @@
       "_:id23":{
         "prov:agent":"exc:derek",
         "prov:activity":"exc:illustrate1"
-      },
-      "_:id24":{
-        "prov:agent":"exc:derek",
-        "prov:activity":"exc:compose1"
       }
     },
     "used":{
