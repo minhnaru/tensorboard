@@ -102,13 +102,6 @@ For Edge Interaction
       padding-left: 10px;
     }
 
-    .show {
-      display: block;
-    }
-
-    .hidden {
-      display: none;
-    }
   </style>
   <template>
     <paper-item>
@@ -129,15 +122,50 @@ For Edge Interaction
           <template is="dom-if" if="{{_info}}">
             <div class="sub-list-group">
               Elements
-              <span class="sub-list sub-list-second">Attribute: [[_hinfo]]</span>
-              <span class="sub-list sub-list-second">Value:     [[_info]]</span>
+              <span class="sub-list sub-list-second">[[_hinfo]] -- [[_info]]</span>
             </div>
           </template>
           <div class="sub-list-group">
-            Head <span class="sub-list sub-list-second">[[_head]]</span>
+            <!-- Tail <span class="sub-list sub-list-second">[[_tail]]</span> -->
+            Tail
+            <iron-list class="sub-list" id ="tailsList"
+                        items="[[_predecessors.regular]]">
+              <template>
+                <tf-node-list-item
+                  class="non-control-list-item"
+                  card-node="[[_tail]]"
+                  item-node="[[item.node]]"
+                  item-render-info="[[item.renderInfo]]"
+                  name="[[item.name]]"
+                  item-type="tail"
+                  color-by="[[colorBy]]"
+                  template-index="[[_templateIndex]]">
+                </tf-node-list-item>
+              </template>
+            </iron-list>
           </div>
           <div class="sub-list-group">
-            Tail <span class="sub-list sub-list-second">[[_tail]]</span>
+            <!-- Head <span class="sub-list sub-list-second">[[_head]]</span> -->
+            Head
+            <iron-list class="sub-list" id ="headsList"
+                        items="[[_successors.regular]]">
+              <template>
+                <!-- Desc
+                item-node: icon display (node name)
+                name: node name
+                -->
+                <tf-node-list-item
+                  class="non-control-list-item"
+                  card-node="[[_head]]"
+                  item-node="[[item.node]]"
+                  item-render-info="[[item.renderInfo]]"
+                  name="[[item.name]]"
+                  item-type="head"
+                  color-by="[[colorBy]]"
+                  template-index="[[_templateIndex]]">
+                </tf-node-list-item>
+              </template>
+            </iron-list>
           </div>
         </div>
       </template>
@@ -155,6 +183,10 @@ For Edge Interaction
           renderHierarchy: Object,
           /** What to color the nodes by (compute time, memory, device etc.) */
           colorBy: String,
+          _templateIndex: {
+            type: Function,
+            computed: '_getTemplateIndex(graphHierarchy)'
+          },
           _edge: {
             type: Object,
             computed: '_getEdge(edgeName)',
@@ -180,8 +212,19 @@ For Edge Interaction
             type: Boolean,
             value: true
           },
+          _successors: {
+            type: Object,
+            computed: '_getSuccessors(_head, graphHierarchy)'
+          },
+          _predecessors: {
+            type: Object,
+            computed: '_getPredecessors(_tail, graphHierarchy)'
+          },
           _auxButtonText: String,
           _groupButtonText: String
+        },
+        _getTemplateIndex: function(graphHierarchy) {
+          return graphHierarchy.getTemplateIndex();
         },
         _getSplit: function (edgeName) {
           let splitName = edgeName.split('--');
@@ -190,6 +233,11 @@ For Edge Interaction
         _getEdge: function (edgeName) {
           if (edgeName != null) {
             return this._getSplit(edgeName)[0];
+          }
+        },
+        _getNode: function(edgeName, graphHierarchy) {
+          if (edgeName != null) {
+            return graphHierarchy.node(this._getSplit(edgeName)[0]);
           }
         },
         _getHead: function (edgeName) {
@@ -214,10 +262,84 @@ For Edge Interaction
         _getHInfo: function (edgeName) {
           if (edgeName != null) {
             if (this._getSplit(edgeName)[1] == this._getSplit(edgeName)[5]) {
-              return "(" + this._getSplit(edgeName)[3] + ")";
+              return this._getSplit(edgeName)[3];
             } else {
               return null;
             }
+          }
+        },
+        _getSuccessors: function(node, hierarchy) {
+          this.async(this._resizeList.bind(this, "#headsList"));
+          if (!node) {
+            return {regular: [], control: []}
+          }
+          return this._convertEdgeListToEdgeInfoList(
+            hierarchy.getSuccessors(node), true);
+        },
+        _getPredecessors: function(node, hierarchy) {
+          this.async(this._resizeList.bind(this, "#tailsList"));
+          if (!node) {
+            return {regular: [], control: []}
+          }
+          return this._convertEdgeListToEdgeInfoList(
+            hierarchy.getPredecessors(node), false);
+        },
+        _getRenderInfo: function(nodeName, renderHierarchy) {
+          return this.renderHierarchy.getOrCreateRenderNodeByName(nodeName);
+        },
+        _convertEdgeListToEdgeInfoList: function(list, isHead, isGroupNode) {
+
+          /**
+           * Unpacks the metaedge into a list of base edge information
+           * that can be rendered.
+           */
+          var unpackMetaedge = function(metaedge) {
+            return _.map(metaedge.baseEdgeList, function(baseEdge) {
+              var name = isHead ? baseEdge.v : baseEdge.w;
+              return {
+                name: name,
+                node: this._getNode(name, this.graphHierarchy),
+                edgeLabel: tf.graph.scene.edge.getLabelForBaseEdge(baseEdge,
+                    this.renderHierarchy),
+                renderInfo: this._getRenderInfo(name, this.renderHierarchy)
+              };
+            }, this);
+          }.bind(this);
+
+          /**
+           * Converts a list of metaedges to a list of edge information
+           * that can be rendered.
+           */
+          var toEdgeInfoList = function(edges) {
+            var edgeInfoList = [];
+            if (edges[0]) {
+              var name = isHead ? edges[0].v : edges[0].w;
+              // Enumerate all the base edges if the node is an OpNode, or the
+              // metaedge has only 1 edge in it.
+              if (!isGroupNode || edges[0].baseEdgeList.length == 1) {
+                edgeInfoList = edgeInfoList.concat(unpackMetaedge(edges[0]));
+              } else {
+                edgeInfoList.push({
+                  name: name,
+                  node: this._getNode(name, this.graphHierarchy),
+                  edgeLabel: tf.graph.scene.edge.getLabelForEdge(edges[0],
+                      this.renderHierarchy),
+                  renderInfo: this._getRenderInfo(name, this.renderHierarchy)
+                });
+              };
+            }
+            return edgeInfoList;
+          }.bind(this);
+
+          return {
+            regular: toEdgeInfoList(list.regular),
+            control: toEdgeInfoList(list.control)
+          };
+        },
+        _resizeList: function(selector) {
+          var list = document.querySelector(selector);
+          if (list) {
+            list.fire('iron-resize');
           }
         },
         _toggleExpanded: function () {
@@ -225,12 +347,6 @@ For Edge Interaction
         },
         _getToggleIcon: function (expanded) {
           return expanded ? "expand-less" : "expand-more";
-        },
-        _resizeList: function (selector) {
-          var list = document.querySelector(selector);
-          if (list) {
-            list.fire('iron-resize');
-          }
         },
         _getPrintableHTMLEdgeName: function (edgeName) {
           // Insert an optional line break before each slash so that

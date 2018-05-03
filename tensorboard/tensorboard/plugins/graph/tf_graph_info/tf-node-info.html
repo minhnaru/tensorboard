@@ -161,13 +161,6 @@ limitations under the License.
     padding-left: 10px;
   }
 
-  .show {
-    display: block;
-  }
-
-  .hidden {
-    display: none;
-  }
   </style>
   <template>
     <paper-item>
@@ -221,10 +214,59 @@ limitations under the License.
         <template is="dom-if" if="{{_device}}">
           <div class="sub-list-group device">
             Elements
-            <span class="sub-list sub-list-second">Attribute: [[_hdevice]]</span>
-            <span class="sub-list sub-list-second">Value:     [[_device]]</span>
+            <span class="sub-list sub-list-second">[[_hdevice]] -- [[_device]]</span>
           </div>
         </template>
+
+        <div class="sub-list-group successors">
+          Outputs
+          (<span>[[_totalSuccessors]]</span>)
+          <iron-list class="sub-list" id ="outputsList"
+                    items="[[_successors.regular]]">
+            <template>
+              <tf-node-list-item
+                  class="non-control-list-item"
+                  card-node="[[_node]]"
+                  item-node="[[item.node]]"
+                  edge-label="[[item.edgeLabel]]"
+                  item-render-info="[[item.renderInfo]]"
+                  name="[[item.name]]"
+                  item-type="successor"
+                  color-by="[[colorBy]]"
+                  template-index="[[_templateIndex]]">
+              </tf-node-list-item>
+            </template>
+          </iron-list>
+          <template is="dom-if" if="[[_successors.control.length]]">
+            <div class="controlDeps">
+              <div class="controlLine">
+                <paper-icon-button
+                  icon="{{_getToggleIcon(_openedControlSucc)}}"
+                  on-click="_toggleControlSucc"
+                  class="control-toggle-button">
+                </paper-icon-button>
+                Control dependencies
+              </div>
+              <iron-collapse opened="{{_openedControlSucc}}" no-animation>
+                <template is="dom-if" if="{{_openedControlSucc}}" restamp="true">
+                  <iron-list class="sub-list" items="[[_successors.control]]">
+                    <template>
+                      <tf-node-list-item
+                          card-node="[[_node]]"
+                          item-node="[[item.node]]"
+                          item-render-info="[[item.renderInfo]]"
+                          name="[[item.name]]"
+                          item-type="successors"
+                          color-by="[[colorBy]]"
+                          template-index="[[_templateIndex]]">
+                      </tf-node-list-item>
+                    </template>
+                  </iron-list>
+                </template>
+              </iron-collapse>
+            </div>
+          </template>
+        </div>
 
         <div class="sub-list-group predecessors">
           Inputs
@@ -276,55 +318,6 @@ limitations under the License.
           </template>
         </div>
 
-        <div class="sub-list-group successors">
-          Outputs
-          (<span>[[_totalSuccessors]]</span>)
-          <iron-list class="sub-list" id ="outputsList"
-                    items="[[_successors.regular]]">
-            <template>
-              <tf-node-list-item
-                  class="non-control-list-item"
-                  card-node="[[_node]]"
-                  item-node="[[item.node]]"
-                  edge-label="[[item.edgeLabel]]"
-                  item-render-info="[[item.renderInfo]]"
-                  name="[[item.name]]"
-                  item-type="successor"
-                  color-by="[[colorBy]]"
-                  template-index="[[_templateIndex]]">
-              </tf-node-list-item>
-            </template>
-          </iron-list>
-          <template is="dom-if" if="[[_successors.control.length]]">
-            <div class="controlDeps">
-              <div class="controlLine">
-                <paper-icon-button
-                  icon="{{_getToggleIcon(_openedControlSucc)}}"
-                  on-click="_toggleControlSucc"
-                  class="control-toggle-button">
-                </paper-icon-button>
-                Control dependencies
-              </div>
-              <iron-collapse opened="{{_openedControlSucc}}" no-animation>
-                <template is="dom-if" if="{{_openedControlSucc}}" restamp="true">
-                  <iron-list class="sub-list" items="[[_successors.control]]">
-                    <template>
-                      <tf-node-list-item
-                          card-node="[[_node]]"
-                          item-node="[[item.node]]"
-                          item-render-info="[[item.renderInfo]]"
-                          name="[[item.name]]"
-                          item-type="successors"
-                          color-by="[[colorBy]]"
-                          template-index="[[_templateIndex]]">
-                      </tf-node-list-item>
-                    </template>
-                  </iron-list>
-                </template>
-              </iron-collapse>
-            </div>
-          </template>
-        </div>
         <template is="dom-if" if="{{_hasDisplayableNodeStats}}">
           <div class="sub-list-group node-stats">
             Node Stats
@@ -550,7 +543,6 @@ limitations under the License.
         _getDevice: function(node) {
           if (node != null && node.device) {
              let nodeDev = node.device.split('--');
-             console.log(nodeDev,' nodeDev');
              return node ? nodeDev[1] : null;
           } else {
             return null;

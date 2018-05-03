@@ -1128,8 +1128,10 @@ function rawNodeGenerator() {
 
     function secondTailInput(x) {
       let splitSecondTail = procElem[x].second_tail.split(':');
+      // let splitHead = procElem[x].head.split(':');
       // push data into input element
       objData["input"].push(splitSecondTail[0] + NAMESPACE_DELIM + NAMESPACE_EX + splitSecondTail[1]);
+      // objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
       // there will be no attr (label) for split edges
     }
 
