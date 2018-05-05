@@ -18,11 +18,11 @@ module tf.graph.scene.edge {
 const TENSOR_SHAPE_DELIM = '×';
 
 /** The minimum stroke width of an edge. */
-export const MIN_EDGE_WIDTH = 0.75;
+export const MIN_EDGE_WIDTH = 1;
 
 /** The maximum stroke width of an edge. */
 // export const MAX_EDGE_WIDTH = 12;
-export const MAX_EDGE_WIDTH = 3;
+export const MAX_EDGE_WIDTH = 4;
 
 /** The exponent used in the power scale for edge thickness. */
 const EDGE_WIDTH_SCALE_EXPONENT = 0.3;
@@ -47,11 +47,11 @@ export const EDGE_WIDTH_SCALE: d3.ScalePower<number, number> = d3.scalePow()
 //Minh
 let arrowheadMap =
     d3.scaleQuantize<String>().domain([MIN_EDGE_WIDTH, MAX_EDGE_WIDTH]).range([
-      'small'
+      'small', 'medium'
     ]);
 
 /** Minimum stroke width to put edge labels in the middle of edges */
-const CENTER_EDGE_LABEL_MIN_STROKE_WIDTH = 2.5;
+const CENTER_EDGE_LABEL_MIN_STROKE_WIDTH = 1;
 
 export type EdgeData = {v: string, w: string, label: render.RenderMetaedgeInfo};
 
@@ -189,6 +189,8 @@ function edgeInteraction(selection, d,
             // console.log(d.label.metaedge.baseEdgeList[0].w,' w');
             // console.log(d.label.metaedge.baseEdgeList[0].outputTensorKey,' key');
 
+            // selection.style("stroke","red");
+
             // console.log(d.label.metaedge.w,' d.label.metaedge.w');
             // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
             sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent
@@ -199,6 +201,15 @@ function edgeInteraction(selection, d,
                                                       +EDGE_KEY_SEP
                                                       +d.label.metaedge.baseEdgeList[0].outputTensorKey});
           });
+      // .on('mouseover',
+      //     d => {
+      //       selection.style("stroke","red");
+      //     });
+      // .on('mouseout',
+      //     // d => {
+      //     //   selection.style("stroke","none");
+      //     // });
+      //     selection.style("stroke","none"));
 };
 
 /**
@@ -490,9 +501,6 @@ function stylize(edgeGroup, d: EdgeData, stylize) {
   let metaedge = d.label.metaedge;
   edgeGroup.select('path.' + Class.Edge.LINE)
       .classed('control-dep', metaedge && !metaedge.numRegularEdges);
-
-  // let isSelected = stylize.isEdgeSelected(d.label.edgeGroup["_groups"][0][0].textContent);
-  // console.log(isSelected,' isSelected edge');
 };
 
 } // close module

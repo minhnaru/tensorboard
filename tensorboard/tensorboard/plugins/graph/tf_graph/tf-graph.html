@@ -63,7 +63,6 @@ paper-button {
           highlighted-node="[[_getVisible(highlightedNode)]]"
           selected-node="{{selectedNode}}"
           selected-edge="{{selectedEdge}}"
-          selected-head="{{selectedHead}}"
           color-by="[[colorBy]]"
           progress="[[progress]]"
           node-names-to-health-pills="[[nodeNamesToHealthPills]]"
@@ -99,10 +98,6 @@ Polymer({
       notify: true,
     },
     selectedEdge: {
-      type: String,
-      notify: true,
-    },
-    selectedHead: {
       type: String,
       notify: true,
     },
@@ -215,7 +210,7 @@ Polymer({
     'node-toggle-extract': '_nodeToggleExtract',
     'node-toggle-seriesgroup': '_nodeToggleSeriesGroup',
     // Edges
-    'edge-select': '_edgeSelected',
+    'edge-select': '_nodeSelected',
 
     // Annotations
 
@@ -253,27 +248,21 @@ Polymer({
   },
   _nodeSelected: function(event) {
     if (this._allowGraphSelect) {
-      this.set('selectedNode', event.detail.name);
-      this.set('selectedEdge', null);
+      if (event.detail.name) {
+        this.set('selectedNode', event.detail.name);
+        this.set('selectedEdge', null);
+      } else if (event.detail.e_name) {
+        this.set('selectedEdge', event.detail.e_name);
+        this.set('selectedNode', null);
+      }
     }
     // Reset this variable as a bug in d3 zoom behavior can cause zoomend
     // callback not to be called if a right-click happens during a zoom event.
     this._allowGraphSelect = true;
   },
-  _edgeSelected: function(event) {
-    if (this._allowGraphSelect) {
-      this.set('selectedEdge', event.detail.e_name);
-      this.set('selectedNode', null);
-    }
-    // Reset this variable as a bug in d3 zoom behavior can cause zoomend
-    // callback not to be called if a right-click happens during a zoom event.
-    this._allowGraphSelect = true;
-  },
-  // _headSelected: function(event) {
+  // _edgeSelected: function(event) {
   //   if (this._allowGraphSelect) {
   //     this.set('selectedEdge', event.detail.e_name);
-  //     this.set('selectedHead', event.detail.h_name);
-  //     // this.set('selectedTailEdge', event.detail.e_t_name);
   //     this.set('selectedNode', null);
   //   }
   //   // Reset this variable as a bug in d3 zoom behavior can cause zoomend

@@ -57,26 +57,44 @@ h2 {
   </paper-material>
 </template>
 <!-- Display for the selectedEdge -->
-<template is="dom-if" if="{{selectedEdge}}">
+<!-- <template is="dom-if" if="{{_isSelectedNode}}">
   <paper-material elevation="1" class="card">
     <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
                   render-hierarchy="[[renderHierarchy]]"
                   flat-graph="[[graph]]"
                   edge-name="[[selectedEdge]]"
+                  node-include="[[selectedNodeInclude]]"
+                  highlighted-node="{{highlightedNode}}"
+                  color-by="[[colorBy]]">
+    </tf-edge-info>
+  </paper-material>
+</template> -->
+<template is="dom-if" if="{{_isSelectedEdge(selectedEdge,selectedNode)}}">
+  <paper-material elevation="1" class="card">
+    <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
+                  render-hierarchy="[[renderHierarchy]]"
+                  flat-graph="[[graph]]"
+                  node-name="[[selectedNode]]"
+                  edge-name="[[selectedEdge]]"
+                  node-include="[[selectedNodeInclude]]"
+                  highlighted-node="{{highlightedNode}}"
                   color-by="[[colorBy]]">
     </tf-edge-info>
   </paper-material>
 </template>
-<!-- <template is="dom-if" if="{{selectedHeadEdge}}">
-    <paper-material elevation="1" class="card">
-      <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
-                    render-hierarchy="[[renderHierarchy]]"
-                    flat-graph="[[graph]]"
-                    edge-head-name="[[selectedHeadEdge]]"
-                    color-by="[[colorBy]]">
-      </tf-edge-info>
-    </paper-material>
-  </template> -->
+<!-- <template is="dom-if" if="{{_isSelectedNode}}">
+  <paper-material elevation="1" class="card">
+    <tf-node-info graph-hierarchy="[[graphHierarchy]]"
+                  render-hierarchy="[[renderHierarchy]]"
+                  flat-graph="[[graph]]"
+                  node-name="[[selectedNode]]"
+                  edge-name="[[selectedEdge]]"
+                  node-include="[[selectedNodeInclude]]"
+                  highlighted-node="{{highlightedNode}}"
+                  color-by="[[colorBy]]">
+    </tf-node-info>
+  </paper-material>
+</template> -->
 <template is="dom-if" if="[[_equals(colorBy, 'op_compatibility')]]">
   <tf-graph-op-compat-card graph-hierarchy="[[graphHierarchy]]"
                            hierarchy-params="[[hierarchyParams]]"
@@ -121,6 +139,14 @@ h2 {
         type: String,
         notify: true
       },
+      selectedEdge: {
+        type: String,
+        notify: true
+      },
+      _isSelectedNode: {
+        type: Boolean,
+        value: false
+      },
       /** @type {string?} */
       highlightedNode: {
         type: String,
@@ -139,7 +165,7 @@ h2 {
     listeners: {
       'node-list-item-click': '_nodeListItemClicked',
       'node-list-item-mouseover': '_nodeListItemMouseover',
-      'node-list-item-mouseout': '_nodeListItemMouseout'
+      'node-list-item-mouseout': '_nodeListItemMouseout',
     },
     _nodeListItemClicked: function(event) {
       this.selectedNode = event.detail.nodeName;
@@ -159,6 +185,16 @@ h2 {
     _equals: function(a, b) {
       return a === b;
     },
+    _isSelectedEdge: function(isSelectedEdge, isSelectedNode) {
+      // if (isSelectedEdge && !isSelectedNode) {
+      //   return true;
+      // } else if (!isSelectedEdge && isSelectedNode) {
+      //   return false;
+      // }
+      // if true -> display Node info
+      // if false -> display Edge info
+      return (isSelectedEdge && !isSelectedNode) ? true : false;
+    }
   });
 })();
 </script>
