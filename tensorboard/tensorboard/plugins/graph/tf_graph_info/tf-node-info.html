@@ -65,6 +65,10 @@ limitations under the License.
     padding: 0 4px;
   }
 
+  .sub-list-second-color {
+      color: #b78163;
+    }
+
   .sub-list-table {
     display: table;
     width: 100%;
@@ -214,7 +218,7 @@ limitations under the License.
         <template is="dom-if" if="{{_device}}">
           <div class="sub-list-group device">
             Elements
-            <span class="sub-list sub-list-second">[[_hdevice]] -- [[_device]]</span>
+            <span class="sub-list sub-list-second"><span class="sub-list-second-color">[[_hdevice]]</span> -- [[_device]]</span>
           </div>
         </template>
 

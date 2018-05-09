@@ -37,6 +37,10 @@ For Edge Interaction
       padding: 0 4px;
     }
 
+    .sub-list-second-color {
+      color: #b78163;
+    }
+
     paper-item {
       padding: 0;
       background: #e9e9e9;
@@ -122,11 +126,10 @@ For Edge Interaction
           <template is="dom-if" if="{{_info}}">
             <div class="sub-list-group">
               Elements
-              <span class="sub-list sub-list-second">[[_hinfo]] -- [[_info]]</span>
+              <span class="sub-list sub-list-second"><span class="sub-list-second-color">[[_hinfo]]</span> -- [[_info]]</span>
             </div>
           </template>
           <div class="sub-list-group">
-            <!-- Tail <span class="sub-list sub-list-second">[[_tail]]</span> -->
             Tail
             <iron-list class="sub-list" id ="tailsList"
                         items="[[_predecessors.regular]]">
@@ -145,7 +148,6 @@ For Edge Interaction
             </iron-list>
           </div>
           <div class="sub-list-group">
-            <!-- Head <span class="sub-list sub-list-second">[[_head]]</span> -->
             Head
             <iron-list class="sub-list" id ="headsList"
                         items="[[_successors.regular]]">
@@ -274,7 +276,7 @@ For Edge Interaction
             return {regular: [], control: []}
           }
           return this._convertEdgeListToEdgeInfoList(
-            hierarchy.getSuccessors(node), true);
+            hierarchy.getSuccessors(node), true, node.isGroupNode);
         },
         _getPredecessors: function(node, hierarchy) {
           this.async(this._resizeList.bind(this, "#tailsList"));
@@ -282,7 +284,7 @@ For Edge Interaction
             return {regular: [], control: []}
           }
           return this._convertEdgeListToEdgeInfoList(
-            hierarchy.getPredecessors(node), false);
+            hierarchy.getPredecessors(node), false, node.isGroupNode);
         },
         _getRenderInfo: function(nodeName, renderHierarchy) {
           return this.renderHierarchy.getOrCreateRenderNodeByName(nodeName);
@@ -306,27 +308,36 @@ For Edge Interaction
             }, this);
           }.bind(this);
 
-          /**
-           * Converts a list of metaedges to a list of edge information
-           * that can be rendered.
-           */
+          function removeDuplicates(myArr, prop) {
+            return myArr.filter((obj, pos, arr) => {
+                return arr.map(mapObj => mapObj[prop]).indexOf(obj[prop]) === pos;
+            });
+          }
+
           var toEdgeInfoList = function(edges) {
             var edgeInfoList = [];
-            if (edges[0]) {
-              var name = isHead ? edges[0].v : edges[0].w;
+            _.each(edges, function(metaedge) {
+              var name = isHead ? metaedge.v : metaedge.w;
               // Enumerate all the base edges if the node is an OpNode, or the
               // metaedge has only 1 edge in it.
-              if (!isGroupNode || edges[0].baseEdgeList.length == 1) {
-                edgeInfoList = edgeInfoList.concat(unpackMetaedge(edges[0]));
+              if (!isGroupNode || metaedge.baseEdgeList.length == 1) {
+                edgeInfoList = edgeInfoList.concat(unpackMetaedge(metaedge));
               } else {
                 edgeInfoList.push({
                   name: name,
                   node: this._getNode(name, this.graphHierarchy),
-                  edgeLabel: tf.graph.scene.edge.getLabelForEdge(edges[0],
+                  edgeLabel: tf.graph.scene.edge.getLabelForEdge(metaedge,
                       this.renderHierarchy),
                   renderInfo: this._getRenderInfo(name, this.renderHierarchy)
                 });
-              };
+              }
+            }, this);
+            // let isMultiEdge = metaedge.baseEdgeList.length > 1;
+            // console.log(edge,' isMultiEdge');
+            if (isGroupNode) {
+              edgeInfoList = null;
+            } else {
+              edgeInfoList = removeDuplicates(edgeInfoList, 'name');
             }
             return edgeInfoList;
           }.bind(this);
