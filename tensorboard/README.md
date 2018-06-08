@@ -1,4 +1,4 @@
-## Install Bazel WORKSPACE
+## Install Bazel WORKSPACE (Optional if Bazel does not work)
 1. Open Terminal -> cd to folder contains "tensorboard" folder.
 2. type "touch WORKSPACE"
 3. type "bazel build"
