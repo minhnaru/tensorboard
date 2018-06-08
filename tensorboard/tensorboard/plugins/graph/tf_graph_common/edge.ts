@@ -22,7 +22,7 @@ export const MIN_EDGE_WIDTH = 1;
 
 /** The maximum stroke width of an edge. */
 // export const MAX_EDGE_WIDTH = 12;
-export const MAX_EDGE_WIDTH = 4;
+export const MAX_EDGE_WIDTH = 3.7;
 
 /** The exponent used in the power scale for edge thickness. */
 const EDGE_WIDTH_SCALE_EXPONENT = 0.3;
@@ -47,7 +47,7 @@ export const EDGE_WIDTH_SCALE: d3.ScalePower<number, number> = d3.scalePow()
 //Minh
 let arrowheadMap =
     d3.scaleQuantize<String>().domain([MIN_EDGE_WIDTH, MAX_EDGE_WIDTH]).range([
-      'small', 'medium'
+      'small'
     ]);
 
 /** Minimum stroke width to put edge labels in the middle of edges */
@@ -136,35 +136,6 @@ export function buildGroup(sceneGroup,
 
 // minh
 
-export function getLabelForInfo(
-  baseEdge, renderInfo): string {
-  // let node = <OpNode>renderInfo.getNodeByName(baseEdge.v); // original
-  // console.log(renderInfo,' renderInfo');
-  // console.log(baseEdge,' baseEdge');
-  // let startNode = <OpNode>renderInfo.getNodeByName(baseEdge.v); // start Node
-  // let endNode = <OpNode>renderInfo.getNodeByName(baseEdge.w); // end Node
-  /* startNode & endNode
-  |  +-------+        +-----+
-  |  | start +------->+ end |
-  |  +-------+        +-----+
-  */
-
-  // Combine to match with the key in Node
-  // let comb = baseEdge.v + EDGE_KEY_SEP + baseEdge.w;
-
-  // if (endNode.attr.length === 0) {
-  //   // return 'no label';
-  //   return ' ';
-  // }
-  // for (let i = 0; i < endNode.attr.length; i++) {
-  //   if (comb == endNode.attr[i].key) {
-  //     // compare and return the edge label between two nodes.
-  //     return endNode.attr[i].value;
-  //   }
-  // }
-  return null;
-}
-
 // Add Interaction for edges when selected.
 // d = edges
 function edgeInteraction(selection, d,
@@ -178,21 +149,7 @@ function edgeInteraction(selection, d,
       .on('click',
           d => {
             (<Event>d3.event).stopPropagation();
-            // console.log(edges,' edges');
-            // console.log(d, 'd');
             console.log('Edge selected.');
-            // console.log(d,' d');
-            // console.log(d.label,' d.label');
-
-            // console.log(d.label.metaedge,' d.label.metaedge');
-            // console.log(d.label.metaedge.baseEdgeList[0].v,' v');
-            // console.log(d.label.metaedge.baseEdgeList[0].w,' w');
-            // console.log(d.label.metaedge.baseEdgeList[0].outputTensorKey,' key');
-
-            // selection.style("stroke","red");
-
-            // console.log(d.label.metaedge.w,' d.label.metaedge.w');
-            // sceneElement.fire('edge-tail-select', {e_t_name: d.label.metaedge.w});
             sceneElement.fire('edge-select', {e_name: d.label.edgeGroup["_groups"][0][0].textContent
                                                       +EDGE_KEY_SEP
                                                       +d.label.metaedge.baseEdgeList[0].v
@@ -200,16 +157,16 @@ function edgeInteraction(selection, d,
                                                       +d.label.metaedge.baseEdgeList[0].w
                                                       +EDGE_KEY_SEP
                                                       +d.label.metaedge.baseEdgeList[0].outputTensorKey});
+          })
+      .on('mouseover',
+          d => {
+            selection.style("stroke","#ff813d");
+          })
+      .on('mouseout',
+          d => {
+            selection.style("stroke","none");
           });
-      // .on('mouseover',
-      //     d => {
-      //       selection.style("stroke","red");
-      //     });
-      // .on('mouseout',
-      //     // d => {
-      //     //   selection.style("stroke","none");
-      //     // });
-      //     selection.style("stroke","none"));
+          // selection.style("stroke","none"));
 };
 
 /**
@@ -501,6 +458,11 @@ function stylize(edgeGroup, d: EdgeData, stylize) {
   let metaedge = d.label.metaedge;
   edgeGroup.select('path.' + Class.Edge.LINE)
       .classed('control-dep', metaedge && !metaedge.numRegularEdges);
+  
+  // let edge = edgeGroup.select('.' + nodeClass + ' .' + Class.Node.COLOR_TARGET);
+  let edge = edgeGroup.select('path.' + Class.Edge.LINE)
+    .classed('control-dep', metaedge && !metaedge.numRegularEdges);
+  // console.log(edge,' test 2');
 };
 
 } // close module

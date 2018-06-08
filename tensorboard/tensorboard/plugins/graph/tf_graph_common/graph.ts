@@ -987,7 +987,7 @@ function addEdgeToGraph(
     w: outputNode.name,
     // outputTensorKey: input.outputTensorKey,
     // minh
-    // change the outputTensorKey to device to get the extra info for notation
+    // change the outputTensorKey to device to get the extra info for edge notation
     outputTensorKey: outputNode.device,
     isControlDependency: input.isControlDependency,
     isReferenceEdge: isRefEdge
@@ -1000,10 +1000,12 @@ export interface relAttr {
   value: string
 }
 
-function rawNodeGenerator() {
+export function rawNodeGenerator(jData) {
   let rawNodesgene = [];
+  createRaw(jData);
 
   function createRaw(Data) {
+    console.log(Data,' json data');
 
     // pick only Entity, Activity, and Agent
     let pickEntity = _.pick(Data, ["entity"]);
@@ -1016,12 +1018,13 @@ function rawNodeGenerator() {
     let procAgent = _.keys(pickAgent["agent"]);
 
     // omit all unnecessary keys to return all relations
-    let pickData = _.omit(Data, ["entity", "activity", "agent", "prefix"]);
+    let pickRelation = _.omit(Data, ["entity", "activity", "agent", "prefix"]);
 
     let procElemT = [];
     // refined data into [{head:.., tail:.., relation:..}, {}, ..]
-    Object.keys(pickData).forEach(function(key) {
-      let elem = _.values(pickData[key]);
+    // for edge only
+    Object.keys(pickRelation).forEach(function(key) {
+      let elem = _.values(pickRelation[key]);
       for (let l = 0; l < elem.length; l++) {
         elem[l]["relation"] = key;
         // compare the key to modify head and tail
@@ -1127,24 +1130,22 @@ function rawNodeGenerator() {
     console.log(procElem,' procElem');
 
     function secondTailInput(x) {
-      let splitSecondTail = procElem[x].second_tail.split(':');
-      // let splitHead = procElem[x].head.split(':');
+      let splitSecondTail = procElem[x].second_tail.replace(/:/g, '/ex_');
       // push data into input element
-      objData["input"].push(splitSecondTail[0] + NAMESPACE_DELIM + NAMESPACE_EX + splitSecondTail[1]);
-      // objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
+      objData["input"].push(splitSecondTail);
       // there will be no attr (label) for split edges
     }
 
     function createInputAttr(x) {
-      let splitHead = procElem[x].head.split(':');
-      let splitTail = procElem[x].tail.split(':');
+      let splitHead = procElem[x].head.replace(/:/g, '/');
+      let splitTail = procElem[x].tail.replace(/:/g, '/');
       // Check if has second tail
       if (procElem[x].second_tail) {
         secondTailInput(x);
       } else {
         // push data into input and attr element
-        objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
-        attrVal.key = splitHead[0] + NAMESPACE_DELIM + splitHead[1] + NAMESPACE_DASH + splitTail[0] + NAMESPACE_DELIM + splitTail[1];
+        objData["input"].push(splitHead);
+        attrVal.key = splitHead + NAMESPACE_DASH + splitTail;
         attrVal.value = procElem[x].relation;
         objData.attr.push(attrVal);
         attrVal = {} as relAttr;
@@ -1154,22 +1155,32 @@ function rawNodeGenerator() {
     // push data into each Entity, Activity, Agent, and Extra Nodes
     let objData = {} as OpNode;
     let attrVal = {} as relAttr;
+    let noteEdgeEntity = [];
+    let noteEdgeActivity = [];
+    let noteEdgeAgent = [];
     // Entity
     for (let i = 0; i < procEntity.length; i++) {
-      let splitData = procEntity[i].split(':');
-      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      let splitData = procEntity[i].replace(/:/g, '/');
+      objData.name = splitData;
       objData.op = "entity";
       objData.attr = [];
       objData["input"] = [];
       for (let x = 0; x < procElem.length; x++) {
         // Check if has one or two tails
-        let tempInfo = procElem[x].head.split(':');
-        let splitHeadInfo = tempInfo[0] + NAMESPACE_DELIM + tempInfo[1];
+        let splitHeadInfo = procElem[x].head.replace(/:/g, '/');
         if (procElem[x].tail == procEntity[i]) {
+          // if has one tail
           createInputAttr(x);
           // add information for objData.device
           // check if there is existed notation
-          let keyInfo = Object.keys(_.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]));
+          let valueInfo = _.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]);
+          let keyInfo = Object.keys(valueInfo);
+          if (!_.isEmpty(valueInfo)) {
+            noteEdgeEntity.push({
+              name: procElem[x].relation,
+              note: valueInfo
+            });
+          }
           if (procElem[x][keyInfo[0]]) {
             if (procElem[x][keyInfo[0]].$) {
               objData.device = keyInfo + NAMESPACE_DASH + procElem[x][keyInfo[0]].$ + NAMESPACE_DASH + splitHeadInfo ;
@@ -1178,6 +1189,7 @@ function rawNodeGenerator() {
             }
           }
         } else if (procElem[x].second_tail == procEntity[i]) {
+          // if has two tails
           secondTailInput(x);
         }
       }
@@ -1186,20 +1198,26 @@ function rawNodeGenerator() {
     }
     // Activity
     for (let i = 0; i < procActivity.length; i++) {
-      let splitData = procActivity[i].split(':');
-      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      let splitData = procActivity[i].replace(/:/g, '/');
+      objData.name = splitData;
       objData.op = "activity";
       objData.attr = [];
       objData["input"] = [];
       for (let x = 0; x < procElem.length; x++) {
         // Check if has one or two tails
-        let tempInfo = procElem[x].head.split(':');
-        let splitHeadInfo = tempInfo[0] + NAMESPACE_DELIM + tempInfo[1];
+        let splitHeadInfo = procElem[x].head.replace(/:/g, '/');
         if (procElem[x].tail == procActivity[i]) {
           createInputAttr(x);
           // add information for objData.device
           // check if there is existed notation
-          let keyInfo = Object.keys(_.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]));
+          let valueInfo = _.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]);
+          let keyInfo = Object.keys(valueInfo);
+          if (!_.isEmpty(valueInfo)) {
+            noteEdgeActivity.push({
+              name: procElem[x].relation,
+              note: valueInfo
+            });
+          }
           if (procElem[x][keyInfo[0]]) {
             if (procElem[x][keyInfo[0]].$) {
               objData.device = keyInfo + NAMESPACE_DASH + procElem[x][keyInfo[0]].$ + NAMESPACE_DASH + splitHeadInfo ;
@@ -1216,20 +1234,26 @@ function rawNodeGenerator() {
     }
     // Agent
     for (let i = 0; i < procAgent.length; i++) {
-      let splitData = procAgent[i].split(':');
-      objData.name = splitData[0] + NAMESPACE_DELIM + splitData[1];
+      let splitData = procAgent[i].replace(/:/g, '/');
+      objData.name = splitData;
       objData.op = "agent";
       objData.attr = [];
       objData["input"] = [];
       for (let x = 0; x < procElem.length; x++) {
         // Check if has one or two tails
-        let tempInfo = procElem[x].head.split(':');
-        let splitHeadInfo = tempInfo[0] + NAMESPACE_DELIM + tempInfo[1];
+        let splitHeadInfo = procElem[x].head.replace(/:/g, '/');
         if (procElem[x].tail == procAgent[i]) {
           createInputAttr(x);
           // add information for objData.device
           // check if there is existed notation
-          let keyInfo = Object.keys(_.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]));
+          let valueInfo = _.omit(procElem[x], ["relation", "head", "tail", "second_tail", "prov:type"]);
+          let keyInfo = Object.keys(valueInfo);
+          if (!_.isEmpty(valueInfo)) {
+            noteEdgeAgent.push({
+              name: procElem[x].relation,
+              note: valueInfo
+            });
+          }
           if (procElem[x][keyInfo[0]]) {
             if (procElem[x][keyInfo[0]].$) {
               objData.device = keyInfo + NAMESPACE_DASH + procElem[x][keyInfo[0]].$ + NAMESPACE_DASH + splitHeadInfo ;
@@ -1247,15 +1271,15 @@ function rawNodeGenerator() {
     // Extra Nodes
     for (let e = 0; e < procElem.length; e++) {
       if (procElem[e].second_tail) {
-        let splitSecondTail = procElem[e].second_tail.split(':');
-        let splitHead = procElem[e].head.split(':');
-        objData.name = splitSecondTail[0] + NAMESPACE_DELIM + NAMESPACE_EX + splitSecondTail[1];
+        let splitSecondTail = procElem[e].second_tail.replace(/:/g, '/ex_');
+        let splitHead = procElem[e].head.replace(/:/g, '/');
+        objData.name = splitSecondTail;
         objData.op = "ex";
         objData.attr = [];
         objData["input"] = [];
         // push data into input and attr element
-        objData["input"].push(splitHead[0] + NAMESPACE_DELIM + splitHead[1]);
-        attrVal.key = splitHead[0] + NAMESPACE_DELIM + splitHead[1] + NAMESPACE_DASH + objData.name;
+        objData["input"].push(splitHead);
+        attrVal.key = splitHead + NAMESPACE_DASH + objData.name;
         attrVal.value = procElem[e].relation;
         objData.attr.push(attrVal);
         attrVal = {} as relAttr;
@@ -1264,30 +1288,82 @@ function rawNodeGenerator() {
         objData = {} as OpNode;
       }
     }
+    // Add node notations
+    let noteNodeEntity = [];
+    let noteNodeActivity = [];
+    let noteNodeAgent = [];
+    _.each(pickEntity["entity"], function(value, key) {
+      if (!_.isEmpty(value)) {
+        noteNodeEntity.push({
+          name: key,
+          note: value
+        });
+      }
+    });
+    _.each(pickActivity["activity"], function(value, key) {
+      if (!_.isEmpty(value)) {
+        noteNodeActivity.push({
+          name: key,
+          note: value
+        });
+      }
+    });
+    _.each(pickAgent["agent"], function(value, key) {
+      if (!_.isEmpty(value)) {
+        noteNodeAgent.push({
+          name: key,
+          note: value
+        });
+      }
+    });
+    // push notation into attr.node for more node info
+    _.each(rawNodesgene, function(d) {
+      if (d.op == "entity") {
+        _.each(noteNodeEntity, function(note) {
+          let splitData = note.name.replace(/:/g, '/');
+          if (splitData == d.name) {
+            d.attr.node = {};
+            d.attr.node = note.note;
+          }
+        });
+      }
+      if (d.op == "activity") {
+        _.each(noteNodeActivity, function(note) {
+          let splitData = note.name.replace(/:/g, '/');
+          if (splitData == d.name) {
+            d.attr.node = {};
+            d.attr.node = note.note;
+          }
+        });
+      }
+      if (d.op == "agent") {
+        _.each(noteNodeAgent, function(note) {
+          let splitData = note.name.replace(/:/g, '/');
+          if (splitData == d.name) {
+            d.attr.node = {};
+            d.attr.node = note.note;
+          }
+        });
+      }
+    });
   }
   
-  function processData(errors, Data) {
-    if (errors) throw errors;
-    console.log(Data,' Data');
-    createRaw(Data);
-  }
+  // function processData(errors, Data) {
+  //   if (errors) throw errors;
+  //   console.log(Data,' Data');
+  //   createRaw(Data);
+  // }
   
-  d3.queue()
-      .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data1.json")
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data3.json")
-
-      // Some random data
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data4.json")
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data5.json")
-      // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data6.json")
-      .await(processData);
+  // d3.queue()
+  //     .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data1.json")
+  //     // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data2.json")
+  //     // .defer(d3.json, "https://raw.githubusercontent.com/minhnaru/tensorboard/master/data/data3.json")
+  //     .await(processData);
 
   console.log(rawNodesgene,' rawNodesgene');
 
   return rawNodesgene;
 }
-// end minh
 
 export function build(
     graphDef: tf.graph.proto.GraphDef, params: BuildParams,
@@ -1310,11 +1386,8 @@ export function build(
   let isInEmbeddedPred = getEmbedPredicate(params.inEmbeddingTypes);
   let isOutEmbeddedPred = getEmbedPredicate(params.outEmbeddingTypes);
   let embeddingNodeNames: string[] = [];
-  // original
-  // let rawNodes = graphDef.node;
-
-  // minh
-  let rawNodes = rawNodeGenerator();
+  
+  let rawNodes = graphDef.node;
 
   // Main with Nest
   /* let rawNodes = [

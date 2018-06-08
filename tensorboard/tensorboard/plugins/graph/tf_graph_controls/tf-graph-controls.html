@@ -280,6 +280,20 @@ table.tf-graph-controls td.input-element-table-data {
 .legend-clarifier paper-tooltip {
   width: 150px;
 }
+
+#result {
+  display:block;
+  width:200px;
+  height:100px;
+}
+
+#import {
+  margin:10px 0;
+}
+
+#selectFiles {
+  display:block;
+}
 </style>
 <svg width="0" height="0">
   <defs>
@@ -298,9 +312,6 @@ table.tf-graph-controls td.input-element-table-data {
 </svg>
 <div class="allcontrols">
   <div class="control-holder">
-    <p>Minh</p>
-  </div>
-  <div class="control-holder">
     <paper-icon-button icon="aspect-ratio" class="iconbutton" on-click="fit" alt="Fit to screen">
     </paper-icon-button>
     <paper-button class="button-text" on-click="fit">Fit to screen
@@ -314,39 +325,18 @@ table.tf-graph-controls td.input-element-table-data {
     <a href="#" id="graphdownload" class="title" download="graph.png">
     </a>
   </div>
-  <!-- <div class="control-holder runs">
-    <div class="title">Run <span class="counter">([[datasets.length]])</span></div>
-    <paper-dropdown-menu no-label-float no-animations noink class="run-dropdown">
-      <paper-menu id="select" class="dropdown-content" selected="{{selectedDataset}}" slot="dropdown-content">
-        <template is="dom-repeat" items="[[datasets]]">
-          <paper-item>[[item.name]]</paper-item>
-        </template>
-      </paper-menu>
-    </paper-dropdown-menu>
+  <div class="control-holder">
+    <div class="title">Upload</div>
+    <paper-button raised class="text-button upload-button"
+        on-click="_getFile">Choose File</paper-button>
+    <div class="hidden-input">
+      <input type="file" id="file" name="file" on-change="_updateFileInput" />
+    </div>
   </div>
-  <template is="dom-if" if="[[showSessionRunsDropdown]]">
-    <div class="control-holder">
-      <div class="title">Session runs <span class="counter">([[_numSessionRuns(metadataTags)]])</span></div>
-      <paper-dropdown-menu no-label-float no-animations noink class="run-dropdown">
-        <paper-menu id="select" class="dropdown-content" selected="{{selectedMetadataTag}}" slot="dropdown-content">
-          <template is="dom-repeat" items="[[metadataTags]]">
-            <paper-item>[[item.tag]]</paper-item>
-          </template>
-          <paper-item>None</paper-item>
-        </paper-menu>
-      </paper-dropdown-menu>
-    </div>
-  </template>
-  <template is="dom-if" if="[[showUploadButton]]">
-    <div class="control-holder">
-      <div class="title">Upload</div>
-      <paper-button raised class="text-button upload-button"
-          on-click="_getFile">Choose File</paper-button>
-      <div class="hidden-input">
-        <input type="file" id="file" name="file" on-change="_updateFileInput" />
-      </div>
-    </div>
-  </template> -->
+  <!-- <div class="control-holder">
+      <textarea id="result">
+        </textarea>
+  </div> -->
   <div class="control-holder">
     <paper-toggle-button id="trace-inputs"></paper-toggle-button>
     <div class="title">Trace inputs</div>
@@ -361,46 +351,7 @@ table.tf-graph-controls td.input-element-table-data {
     <div class="title">Color</div>
     <paper-radio-group id="color-by-radio-group" selected="{{colorBy}}">
       <paper-radio-button name="structure">Structure</paper-radio-button>
-
       <paper-radio-button name="device">Elements</paper-radio-button>
-
-      <!-- <paper-radio-button id="xla-cluster-radio-button"
-                          name="xla_cluster"
-                          disabled="[[!_xlaClustersProvided(renderHierarchy)]]">
-        XLA Cluster
-      </paper-radio-button>
-      <paper-tooltip animation-delay="0" for="xla-cluster-radio-button" position="right">
-        Coloring by XLA cluster is only enabled if at least 1 op specifies an XLA cluster.
-      </paper-tooltip>
-
-      <paper-radio-button id="compute-time-radio-button"
-                          name="compute_time"
-                          disabled="[[!stats]]">
-        Compute time
-      </paper-radio-button>
-      <paper-tooltip animation-delay="0" for="compute-time-radio-button" position="right">
-        Coloring by compute time is only enabled if the RunMetadata proto is passed to the
-        FileWriter when a specific session is run.
-      </paper-tooltip>
-
-      <paper-radio-button id="memory-radio-button"
-                          name="memory"
-                          disabled="[[!stats]]">
-        Memory
-      </paper-radio-button>
-      <paper-tooltip animation-delay="0" for="memory-radio-button" position="right">
-        Coloring by memory is only enabled if the RunMetadata proto is passed to the
-        FileWriter when a specific session is run.
-      </paper-tooltip>
-
-      <paper-radio-button id="tpu-compatibility-radio-button"
-                          name="op_compatibility">
-        TPU Compatibility
-      </paper-radio-button>
-      <paper-tooltip animation-delay="0" for="tpu-compatibility-radio-button" position="right">
-        Coloring by whether an operation is compatible for the TPU device.
-      </paper-tooltip> -->
-
     </paper-radio-group>
   </div>
   <div>
@@ -444,7 +395,7 @@ table.tf-graph-controls td.input-element-table-data {
         </table>
       </div>
     </template>
-    <template is="dom-if" if="[[_equals(colorBy, 'structure')]]">
+    <!-- <template is="dom-if" if="[[_equals(colorBy, 'structure')]]">
       <div class="color-text">
         <div class="color-legend-row">
           <div style="position: absolute;">
@@ -460,7 +411,7 @@ table.tf-graph-controls td.input-element-table-data {
           <span class="color-legend-value">unique substructure</span>
         </div>
       </div>
-    </template>
+    </template> -->
     <template is="dom-if" if="[[_equals(colorBy, 'device')]]">
       <div class="color-text">
         <div class="deviceList">
@@ -635,43 +586,6 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <!-- <tr>
-            <td>
-              <svg class="icon" height="15px" preserveAspectRatio="xMinYMid meet"
-                  viewBox="0 0 12 12">
-                <use xlink:href="#op-series-horizontal-stamp" fill="white"
-                    stroke="#ccc" x="2" y="2"/>
-              </svg>
-            </td>
-            <td>
-              Unconnected series<span class="gray">*</span>
-              <div class="legend-clarifier">
-                <span>?</span>
-                <paper-tooltip animation-delay="0" position="right">
-                  Sequence of numbered nodes that are not connected to each other.
-                </paper-tooltip>
-              </div>
-            </td>
-          </tr> -->
-          <!-- <tr>
-            <td>
-              <svg class="icon" height="15px"
-                  preserveAspectRatio="xMinYMid meet" viewBox="0 0 15 15">
-                <use xlink:href="#op-series-vertical-stamp"
-                    fill="white" stroke="#ccc" x="2" y="2"/>
-              </svg>
-            </td>
-            <td>
-              Connected series<span class="gray">*</span>
-              <div class="legend-clarifier">
-                <span>?</span>
-                <paper-tooltip animation-delay="0" position="right">
-                  Sequence of numbered nodes that are connected to each other.
-                </paper-tooltip>
-              </div>
-            </td>
-          </tr>
-          <tr> -->
             <td>
               <svg class="icon">
                 <circle fill="white" stroke="#848484" cx="10" cy="10" r="5"/>
@@ -687,22 +601,6 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <!-- <tr>
-            <td>
-              <svg class="image-icon" viewBox="0 0 12 12" width="24" height="24">
-                <use x="0" y="0" class="image-icon" xlink:href="#summary-icon"/>
-              </svg>
-            </td>
-            <td>
-              Summary
-              <div class="legend-clarifier">
-                <span>?</span>
-                <paper-tooltip animation-delay="0" position="right">
-                  Node that collects data for visualization within TensorBoard.
-                </paper-tooltip>
-              </div>
-            </td>
-          </tr> -->
           <tr>
             <td>
               <svg class="icon" height="15px"
@@ -746,31 +644,6 @@ table.tf-graph-controls td.input-element-table-data {
               </div>
             </td>
           </tr>
-          <!-- <tr>
-            <td>
-              <svg class="icon" height="15px"
-                  preserveAspectRatio="xMinYMid meet" viewBox="0 0 15 15">
-                <defs>
-                  <marker id="reference-arrowhead-legend" fill="#FFB74D" markerWidth="10"
-                      markerHeight="10" refX="9" refY="5" orient="auto-start-reverse">
-                    <path d="M 0,0 L 10,5 L 0,10 C 3,7 3,3 0,0"/>
-                  </marker>
-                </defs>
-                <path marker-end="url(#reference-arrowhead-legend)"
-                      stroke="#FFB74D" d="M2 9 l 29 0"
-                      stroke-linecap="round" />
-              </svg>
-            </td>
-            <td>
-              Reference edge
-              <div class="legend-clarifier">
-                <span>?</span>
-                <paper-tooltip animation-delay="0" position="right">
-                  Edge showing that the outgoing operation node can mutate the incoming tensor.
-                </paper-tooltip>
-              </div>
-            </td>
-          </tr> -->
         </table>
       </div>
     </iron-collapse>
@@ -978,7 +851,22 @@ Polymer({
       return;
     }
     this._setDownloadFilename(file.name);
-    this.set('selectedFile', e);
+
+    // Create fileReader for json data.
+    // onload and parse json data to event file.
+    var fr = new FileReader();
+    var that = this;
+    fr.onload = function(d) {
+      var result = JSON.parse(d.target.result);
+      // var formatted = JSON.stringify(result, null, 2);
+      // document.getElementById('result').value = formatted;
+      e.jsonUpload = tf.graph.rawNodeGenerator(result);
+      // put .set selectedFile in here to prevent callback error.
+      that.set('selectedFile', e);
+      // set the selectedFile an pass the values all the way to tf-graph-loader.html
+    }
+
+    fr.readAsText(file);
   },
   _datasetsChanged: function(newDatasets, oldDatasets) {
     if (oldDatasets != null || this.selected == null) {

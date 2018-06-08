@@ -130,7 +130,7 @@ For Edge Interaction
             </div>
           </template>
           <div class="sub-list-group">
-            Tail
+            Object
             <iron-list class="sub-list" id ="tailsList"
                         items="[[_predecessors.regular]]">
               <template>
@@ -148,7 +148,7 @@ For Edge Interaction
             </iron-list>
           </div>
           <div class="sub-list-group">
-            Head
+            Subject
             <iron-list class="sub-list" id ="headsList"
                         items="[[_successors.regular]]">
               <template>
@@ -283,8 +283,29 @@ For Edge Interaction
           if (!node) {
             return {regular: [], control: []}
           }
-          return this._convertEdgeListToEdgeInfoList(
-            hierarchy.getPredecessors(node), false, node.isGroupNode);
+          if (node.split('/')) {
+            let isEx1 = node.split('/');
+            let isEx2 = isEx1[1].split('_');
+            if (isEx2[0] == 'ex') {
+              return this._convertEdgeListToEdgeInfoList(
+                hierarchy.getSuccessors(node), false, node.isGroupNode);
+            } else {
+              return this._convertEdgeListToEdgeInfoList(
+                hierarchy.getPredecessors(node), false, node.isGroupNode);
+            }
+          } else {
+            return this._convertEdgeListToEdgeInfoList(
+              hierarchy.getPredecessors(node), false, node.isGroupNode);
+          }
+          // let isEx1 = node.split('/');
+          // let isEx2 = isEx1[1].split('_');
+          // if (isEx2[0] == 'ex') {
+          //   return this._convertEdgeListToEdgeInfoList(
+          //     hierarchy.getSuccessors(node), false, node.isGroupNode);
+          // } else {
+          //   return this._convertEdgeListToEdgeInfoList(
+          //     hierarchy.getPredecessors(node), false, node.isGroupNode);
+          // }
         },
         _getRenderInfo: function(nodeName, renderHierarchy) {
           return this.renderHierarchy.getOrCreateRenderNodeByName(nodeName);
@@ -332,8 +353,6 @@ For Edge Interaction
                 });
               }
             }, this);
-            // let isMultiEdge = metaedge.baseEdgeList.length > 1;
-            // console.log(edge,' isMultiEdge');
             if (isGroupNode) {
               edgeInfoList = null;
             } else {

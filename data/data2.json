@@ -14,7 +14,7 @@
     "wasAssociatedWith": {
         "_:id3": {
             "prov:plan":"staff:instructions",
-            "prov:agent": "staff:chef",
+            "prov:agent": "staff:assistant",
             "prov:activity": "recipes:bake"
         }
     },
@@ -46,6 +46,14 @@
                 "$": "prov:Person"
             },
             "foaf:mbox": "<mailto:minh@example.org>"
+        },
+        "staff:assistant": {
+            "foaf:givenName": "Derek",
+            "prov:type": {
+                "type": "prov:QUALIFIED_NAME",
+                "$": "prov:Person"
+            },
+            "foaf:mbox": "<mailto:derek@example.org>"
         }
     },
     "entity": {

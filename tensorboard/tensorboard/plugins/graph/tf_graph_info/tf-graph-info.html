@@ -57,18 +57,6 @@ h2 {
   </paper-material>
 </template>
 <!-- Display for the selectedEdge -->
-<!-- <template is="dom-if" if="{{_isSelectedNode}}">
-  <paper-material elevation="1" class="card">
-    <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
-                  render-hierarchy="[[renderHierarchy]]"
-                  flat-graph="[[graph]]"
-                  edge-name="[[selectedEdge]]"
-                  node-include="[[selectedNodeInclude]]"
-                  highlighted-node="{{highlightedNode}}"
-                  color-by="[[colorBy]]">
-    </tf-edge-info>
-  </paper-material>
-</template> -->
 <template is="dom-if" if="{{_isSelectedEdge(selectedEdge,selectedNode)}}">
   <paper-material elevation="1" class="card">
     <tf-edge-info graph-hierarchy="[[graphHierarchy]]"
@@ -82,13 +70,13 @@ h2 {
     </tf-edge-info>
   </paper-material>
 </template>
+<!-- original -->
 <!-- <template is="dom-if" if="{{_isSelectedNode}}">
   <paper-material elevation="1" class="card">
     <tf-node-info graph-hierarchy="[[graphHierarchy]]"
                   render-hierarchy="[[renderHierarchy]]"
                   flat-graph="[[graph]]"
                   node-name="[[selectedNode]]"
-                  edge-name="[[selectedEdge]]"
                   node-include="[[selectedNodeInclude]]"
                   highlighted-node="{{highlightedNode}}"
                   color-by="[[colorBy]]">

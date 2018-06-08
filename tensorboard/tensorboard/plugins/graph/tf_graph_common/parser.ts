@@ -45,6 +45,7 @@ export function fetchPbTxt(filepath: string): Promise<ArrayBuffer> {
 
     request.onerror = () => reject(request.status);
     request.onload = () => resolve(request.response);
+    // request.onload = () => console.log(resolve(request.response),' request 1');
 
     request.send(null);
   });
@@ -77,18 +78,19 @@ export function fetchAndParseMetadata(path: string, tracker: ProgressTracker) {
  * Fetches the graph file, parses it and returns a promise of the result. The
  * result will be undefined if the graph is empty.
  */
-export function fetchAndParseGraphData(path: string, pbTxtFile: Blob,
+// jsonFile: Blob
+export function fetchAndParseGraphData(path: string, jsonFile: Blob,
     tracker: ProgressTracker) {
   return tf.graph.util
       .runTask(
           'Reading graph pbtxt', 40,
           () => {
-            if (pbTxtFile) {
+            if (jsonFile) {
               return new Promise<ArrayBuffer>(function(resolve, reject) {
                 let fileReader = new FileReader();
                 fileReader.onload = () => resolve(fileReader.result);
                 fileReader.onerror = () => reject(fileReader.error);
-                fileReader.readAsArrayBuffer(pbTxtFile);
+                fileReader.readAsArrayBuffer(jsonFile);
               });
             } else {
               return fetchPbTxt(path);

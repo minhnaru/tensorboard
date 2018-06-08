@@ -1,0 +1,70 @@
+<!--
+Minh
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../tf-dashboard-common/tensorboard-color.html">
+<link rel="import" href="tf-graph-icon.html">
+
+<dom-module id="tf-note-list-item">
+  <style>
+  #list-item {
+    width: 100%;
+    color: #565656;
+    font-size: 11pt;
+    font-weight: 400;
+    position: relative;
+    display: inline-block;
+  }
+
+  #list-item:hover {
+    background-color: var(--google-yellow-100);
+  }
+
+  #list-item.excluded span {
+    color: #999;
+  }
+
+  .titlename {
+    color: #b78163;
+  }
+
+  #list-item span.edge-label {
+    float: right;
+    font-size: 10px;
+    margin-left: 3px;
+    margin-right: 5px;
+  }
+
+  .faded span {
+    color: var(--tb-graph-faded);
+  }
+  </style>
+  <template>
+    <div id="list-item">
+      <div class$="{{_fadedClass(itemRenderInfo)}}">
+        <span class="titlename" title$="[[name]]">[[name]]</span>
+        <span> -- </span>
+        <span title$="[[info]]">[[info]]</span>
+      </div>
+    </div>
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'tf-note-list-item',
+
+        properties: {
+          itemRenderInfo: Object,
+          name: String,
+          info: String
+        },
+
+        _fadedClass: function(itemRenderInfo) {
+          return itemRenderInfo && itemRenderInfo.isFadedOut ? 'faded' : '';
+        }
+      });
+    })();
+  </script>
+</dom-module>

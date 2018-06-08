@@ -763,7 +763,7 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
   nodeClass = nodeClass || Class.Node.SHAPE;
   let isHighlighted = sceneElement.isNodeHighlighted(renderInfo.node.name);
   let isSelected = sceneElement.isNodeSelected(renderInfo.node.name);
-  console.log(isSelected,' isSelected');
+  // console.log(isSelected,' isSelected');
   let isExtract = renderInfo.isInExtract || renderInfo.isOutExtract;
   let isExpanded = renderInfo.expanded && nodeClass !== Class.Annotation.NODE;
   let isFadedOut = renderInfo.isFadedOut;
@@ -776,6 +776,7 @@ export function stylize(nodeGroup, renderInfo: render.RenderNodeInfo,
   // Main node always exists here and it will be reached before subscene,
   // so d3 selection is fine here.
   let node = nodeGroup.select('.' + nodeClass + ' .' + Class.Node.COLOR_TARGET);
+  // console.log(node,' test 1');
   let fillColor = getFillForNode(sceneElement.templateIndex,
     ColorBy[sceneElement.colorBy.toUpperCase()],
     renderInfo, isExpanded);

@@ -485,10 +485,15 @@ limitations under the License.
   stroke-width: 0.75;
 }
 
+::content .edge > path.edgeline:hover {
+  stroke: #ff813d;
+}
+
 /* Labels showing tensor shapes on edges */
 ::content .edge > text {
   font-size: 3.5px;
   fill: #666;
+  cursor: default;
 }
 
 ::content .dataflow-arrowhead {
