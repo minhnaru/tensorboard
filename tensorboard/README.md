@@ -1,13 +1,19 @@
-## Install Bazel WORKSPACE (Optional if Bazel does not work)
-1. Open Terminal -> cd to folder contains "tensorboard" folder.
-2. type "touch WORKSPACE"
-3. type "bazel build"
+
+
+## Install Tensorflow
+1. How to install Tensorflow
+https://www.tensorflow.org/install/
 
 ## Install Bazel
 ```
 chmod +x bazel-0.5.4-installer-darwin-x86_64.sh
 ```
 The binary version can be downloaded from (https://github.com/bazelbuild/bazel/releases/tag/0.5.4)
+
+## Install Bazel WORKSPACE (Optional if Bazel does not work)
+1. Open Terminal -> cd to folder contains "tensorboard" folder.
+2. type "touch WORKSPACE"
+3. type "bazel build"
 
 ## Setup Environment
 ```
